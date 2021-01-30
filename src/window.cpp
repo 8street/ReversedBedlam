@@ -112,12 +112,12 @@ int init_window(HINSTANCE hwnd, HINSTANCE prev_hwnd, LPSTR lp_cmd_line) {
     //dword_4EF67C = 0;
     //init_dsound();
     int error_code = 0;
-    if (SURFACE_NEED_UNLOCK)
+    if (SURFACE_IS_LOCKED)
     {
         error_code = ddraw_init(WINDOW_HWND);
         if (error_code)
         {
-            SURFACE_NEED_UNLOCK = 0;
+            SURFACE_IS_LOCKED = 0;
         }
         else
         {
@@ -126,11 +126,11 @@ int init_window(HINSTANCE hwnd, HINSTANCE prev_hwnd, LPSTR lp_cmd_line) {
             if (error_code)
             {
                 //ddraw_deinit();
-                SURFACE_NEED_UNLOCK = 0;
+                SURFACE_IS_LOCKED = 0;
             }
         }
     }
-    if (!SURFACE_NEED_UNLOCK)
+    if (!SURFACE_IS_LOCKED)
         return error_code;
     clear_and_blit_screen();
     //SmackSoundUseDirectSound(WINDOW_HWND);
@@ -158,8 +158,8 @@ LRESULT WindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
     }
     if (Msg == WM_SIZE && !FULLSCREEN)
     {
-        GAME_WIDTH = lParam & 0xFFFF;
-        GAME_HEIGHT = (lParam >> 16) & 0xFFFF;
+        GAME_WIDTH = LOWORD(lParam);
+        GAME_HEIGHT = HIWORD(lParam);
         ///dword_4EF682 = lParam;
         InvalidateRect(WINDOW_HWND, NULL, 0);
     }
@@ -171,19 +171,26 @@ LRESULT WindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
             activate_app(1);
             return 0;
         }
+        return 1;
     }
     if (Msg == WM_SETCURSOR) {
-        if (IsIconic(hWnd) || !SURFACE_NEED_UNLOCK) {// is minimized
-            lParam = 0;
+        uint16_t nHittest = LOWORD(lParam);
+        uint16_t wMouseMsg = HIWORD(lParam); 
+        if (IsIconic(hWnd) || !SURFACE_IS_LOCKED) {// is minimized
+            nHittest = HTNOWHERE;
         }
-        if (lParam == 1){
+        if (nHittest == HTCLIENT){ // in client area
             SetCursor(0);
+            return 1;
         }
         else {
             HCURSOR cursor = LoadCursorA(NULL, (LPCSTR)0x7F00);
             SetCursor(cursor);
         }
+        return 1;
+
     }
+
 
     if ((unsigned int)Msg >= WM_KEYDOWN)
     {
