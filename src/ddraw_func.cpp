@@ -6,10 +6,10 @@
 uint32_t GAME_WIDTH = 640;
 uint32_t GAME_HEIGHT = 480;
 
-uint16_t CURSOR_SURFACE_SIZE;
+
 
 uint8_t FULLSCREEN;
-uint8_t SURFACE_NEED_UNLOCK;
+uint8_t SURFACE_IS_LOCKED;
 uint8_t DDRAW_CREATED;
 
 uint16_t flag_v;
@@ -142,7 +142,7 @@ int create_surface_palette(int32_t width, int32_t height, int32_t depth) {
     else{
         memset(&ddraw_surf_descr2, 0, sizeof(ddraw_surf_descr2));
         ddraw_surf_descr2.dwSize = 108;
-        ddraw_surf_descr2.ddsCaps.dwCaps = 512;
+        ddraw_surf_descr2.ddsCaps.dwCaps = DDCAPS_BLTSTRETCH;
         ddraw_surf_descr2.dwFlags = 1;
         if ((uint32_t)lpDD->CreateSurface(&ddraw_surf_descr2, &DDRAW_PRIMARY_SCREEN_SURFACE, NULL))
             return 1004;
@@ -150,7 +150,7 @@ int create_surface_palette(int32_t width, int32_t height, int32_t depth) {
         memset(&ddraw_surf_descr2, 0, sizeof(ddraw_surf_descr2));
         ddraw_surf_descr2.dwWidth = width;
         ddraw_surf_descr2.dwHeight = height;
-        ddraw_surf_descr2.ddsCaps.dwCaps = 64;
+        ddraw_surf_descr2.ddsCaps.dwCaps = DDCAPS_BLT;
         ddraw_surf_descr2.dwSize = 108;
         ddraw_surf_descr2.dwFlags = 7;
         if ((uint32_t)lpDD->CreateSurface(&ddraw_surf_descr2, &DDRAW_SECOND_SCREEN_SURFACE, NULL))
@@ -311,11 +311,11 @@ void clear_and_blit_screen() {
     //int j; // ecx
     //int v14; // eax
 
-    if (SURFACE_NEED_UNLOCK)
+    if (SURFACE_IS_LOCKED)
     {
         app_active1 = APPLICATION_ACTIVE;
         APPLICATION_ACTIVE = 1;
-        if (SURFACE_NEED_UNLOCK)
+        if (SURFACE_IS_LOCKED)
         {
             unlock_surface();
             blit_second_surface_to_screen();
@@ -404,8 +404,8 @@ HRESULT unlock_surface()
 {
     HRESULT result; // eax
 
-    result = SURFACE_NEED_UNLOCK;
-    if (SURFACE_NEED_UNLOCK){ 
+    result = SURFACE_IS_LOCKED;
+    if (SURFACE_IS_LOCKED){ 
         result = DDRAW_SECOND_SCREEN_SURFACE->Unlock(NULL);
     }
     return result;
@@ -416,7 +416,7 @@ uint8_t* lock_and_get_surface_ptr() {
 
     DDSURFACEDESC surface_description; // [esp+20h] [ebp-64h] OVERLAPPED BYREF
 
-    if (!APPLICATION_ACTIVE || !SURFACE_NEED_UNLOCK) {
+    if (!APPLICATION_ACTIVE || !SURFACE_IS_LOCKED) {
         return NULL;
     }
     if (DDRAW_PRIMARY_SCREEN_SURFACE->IsLost() == DDERR_SURFACELOST) {
@@ -497,15 +497,16 @@ int blit_second_surface_to_screen()
 
     if (APPLICATION_ACTIVE)
     {
-        result = SURFACE_NEED_UNLOCK;
+        result = SURFACE_IS_LOCKED;
         IS_BLITTING = 1;
-        if (SURFACE_NEED_UNLOCK)
+        if (SURFACE_IS_LOCKED)
         {
-            if (*(int*)((char*)&DDRAW_SURFACE_CLIPPER + 2) >> 16 == 1)
+            if (CURSOR_HIDDEN)
             {
-                //while ((__int16)dword_4EEDF8 == 1)
-                //    ;
-                //HIWORD(dword_4EEDF8) = 1;
+                while (CURSOR_IS_BLITTING) {
+                    ;
+                }
+                CURSOR_UNKNOWN = 1;
                 blit_cursor_bg();
             }
             if (FULLSCREEN)
@@ -524,9 +525,9 @@ int blit_second_surface_to_screen()
                 destination.bottom = WINDOW_POS_Y + WINDOW_HEIGHT;
                 DDRAW_PRIMARY_SCREEN_SURFACE->Blt(&destination, DDRAW_SECOND_SCREEN_SURFACE, &source, 0x1000000, NULL);
             }
-            if (*(int*)((char*)&DDRAW_SURFACE_CLIPPER + 2) >> 16 == 1)
+            if (CURSOR_HIDDEN)
             {
-                //HIWORD(dword_4EEDF8) = 0;
+                CURSOR_UNKNOWN = 0;
                 GetCursorPos(&Cursor);
                 blit_cursor(Cursor.x, Cursor.y);
             }
@@ -562,13 +563,13 @@ int blit_cursor(int x, int y)
         y = WINDOW_POS_Y + WINDOW_HEIGHT - 1;
     if (DDRAW_PRIMARY_SCREEN_SURFACE)
     {
-        //result = (__int16)dword_4EEDF8;
-        //if ((__int16)dword_4EEDF8 != 1)
-        //{
-        //    result = dword_4EEDF8 >> 16;
-        //    if (dword_4EEDF8 >> 16 != 1)
-        //    {
-        //        LOWORD(dword_4EEDF8) = 1;
+        result = CURSOR_IS_BLITTING;
+        if (!CURSOR_IS_BLITTING)
+        {
+            result = HIWORD(CURSOR_UNKNOWN);
+            if ( HIWORD(CURSOR_UNKNOWN) != 1)
+            {
+                CURSOR_IS_BLITTING = 1;
                 if (DDRAW_PRIMARY_SCREEN_SURFACE->IsLost() == DDERR_SURFACELOST) {
                     DDRAW_PRIMARY_SCREEN_SURFACE->Restore();
                 }
@@ -599,9 +600,9 @@ int blit_cursor(int x, int y)
                 CURSOR_X1 = x;
                 CURSOR_Y1 = y;
                 result = 0;
-                //LOWORD(dword_4EEDF8) = 0;
-           //}
-        //}
+                CURSOR_IS_BLITTING = 0;
+            }
+        }
     }
     return result;
 }
@@ -670,7 +671,7 @@ HRESULT ddraw_setpalletes(uint8_t* pal_ptr, int16_t offset, int16_t num_entries)
     int32_t first_entry = 0;
     HRESULT ret = DD_OK;
 
-    if (SURFACE_NEED_UNLOCK)
+    if (SURFACE_IS_LOCKED)
     {
         first_entry = offset;
         NEED_PALETTE_UPDATE = 1;
@@ -745,4 +746,46 @@ void copy_buffer_to_screen_and_unlock(uint8_t* buffer)
         destin += SCREEN_SURFACE_WIDTH;
     }
     unlock_surface_and_screen_ptr();
+}
+
+//0044BCF4
+void unlock_cursor_surface()
+{
+    if (SURFACE_IS_LOCKED) {
+        DDRAW_GAMECURSOR_SURFACE->Unlock(NULL);
+    }
+}
+
+//0044BC90
+uint8_t* lock_and_get_cursor_surface()
+{
+    uint8_t* result; // eax
+    DDSURFACEDESC description; // [esp+1Ch] [ebp-64h] OVERLAPPED BYREF
+
+    if (!SURFACE_IS_LOCKED){
+        return NULL;
+    }
+    if (DDRAW_GAMECURSOR_SURFACE->IsLost() == DDERR_SURFACELOST) {
+        DDRAW_GAMECURSOR_SURFACE->Restore();
+    }
+    description.dwSize = 108;
+    if ((uint32_t)DDRAW_GAMECURSOR_SURFACE->Lock(NULL, &description, DDLOCK_WAIT, NULL))
+    {
+        result = NULL;
+    }
+    else
+    {
+        result = (uint8_t*)description.lpSurface;
+    }
+    return result;
+}
+
+//0044BB84
+HRESULT Set_Cursor_ColorKey(int16_t color_range)
+{
+    DDCOLORKEY colorkey; // [esp+0h] [ebp-14h] BYREF
+
+    colorkey.dwColorSpaceLowValue = color_range;
+    colorkey.dwColorSpaceHighValue = color_range;
+    return DDRAW_GAMECURSOR_SURFACE->SetColorKey(DDCKEY_SRCBLT, &colorkey);
 }

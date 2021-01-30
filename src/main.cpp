@@ -14,7 +14,7 @@ HANDLE HANDLE_GAME_THREAD;
 int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, INT nCmdShow)
 {
 
-    SURFACE_NEED_UNLOCK = 1;
+    SURFACE_IS_LOCKED = 1;
     int32_t error_code = init_window(hInstance, hPrevInstance, lpCmdLine);
 
     if (!error_code)

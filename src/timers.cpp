@@ -38,20 +38,22 @@ void timer_callback(UINT uTimerID, UINT uMsg, DWORD_PTR dwUser, DWORD_PTR dw1, D
 //0041BFB6
 void timer_update()
 {
+    static uint32_t cursor_timer;
 
+    cursor_timer++;
     //if (register_readed)
     //    sub_402BAC();
     increment_timers();
-    //mouse_update();
+    mouse_update();
 
     // animated cursor
-    if (CURSOR_ICON2 >= 144 && CURSOR_ICON2 < 152 && (PALETTE_TIMER & 7) == 0)
+    if (CURSOR_ICON2 >= 144 && CURSOR_ICON2 < 152)// && (PALETTE_TIMER & 7) == 0)
     {
         ++CURSOR_ICON2;
         if (CURSOR_ICON2 == 151) {
             CURSOR_ICON2 = 144;
         }
-        //set_cursor_icon(CURSOR_ICON2);
+        set_cursor_icon(CURSOR_ICON2);
     }
 }
 

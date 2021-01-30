@@ -8,7 +8,7 @@ extern uint32_t GAME_WIDTH;
 extern uint32_t GAME_HEIGHT;
 
 extern uint8_t FULLSCREEN;
-extern uint8_t SURFACE_NEED_UNLOCK;
+extern uint8_t SURFACE_IS_LOCKED;
 
 extern uint16_t flag_v;
 
@@ -40,3 +40,6 @@ HRESULT unlock_surface_and_screen_ptr();
 HRESULT ddraw_setpalletes(uint8_t* pal_ptr, int16_t offset, int16_t num_entries);
 void redraw();
 void copy_buffer_to_screen_and_unlock(uint8_t* buffer);
+void unlock_cursor_surface();
+uint8_t* lock_and_get_cursor_surface();
+HRESULT Set_Cursor_ColorKey(int16_t color_range);
