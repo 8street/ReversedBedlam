@@ -217,6 +217,7 @@ void draw_main_menu_background_IMG(uint8_t* bin, uint8_t* palitra, uint8_t* buff
     wait_palette_animation(0);
 }
 
+//00401E39
 void draw_IMG_in_buffer(int32_t image_number, int16_t transparent, int32_t x_pos, int32_t y_pos, uint8_t* buffer, uint8_t* bin_ptr)
 {
  

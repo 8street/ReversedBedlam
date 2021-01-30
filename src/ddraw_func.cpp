@@ -730,6 +730,7 @@ void redraw()
     blit_second_surface_to_screen();
 }
 
+//00425A1E
 void copy_buffer_to_screen_and_unlock(uint8_t* buffer)
 {
     int i; // [esp+0h] [ebp-20h]
