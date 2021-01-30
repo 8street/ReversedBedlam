@@ -17,7 +17,7 @@ void draw_text(const char* buffer, uint8_t* bin_ptr, int32_t pos_y, int32_t font
     signed int i; // [esp+20h] [ebp-14h]
 
     size_x = 0;
-    len = strlen(buffer);
+    len = static_cast<int32_t>(strlen(buffer));
     i = 0;
     buffer1 = buffer;
     while (i < len)
