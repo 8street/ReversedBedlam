@@ -205,6 +205,7 @@ void get_cursor_pos(LONG* x, LONG* y)
     *y = cursor_pos.y;
 }
 
+//0042392D
 void set_and_hide_cursor()
 {
     set_cursor_icon(CURSOR_ICON);
@@ -212,6 +213,7 @@ void set_and_hide_cursor()
     hide_cursor();
 }
 
+//0044B3D8
 void hide_cursor()
 {
     CURSOR_X1 = -1;
