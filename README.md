@@ -2,12 +2,21 @@
 An open source re-implementation of Bedlam 1996 game.
 
 # Project State
+
 Not playable yet.
+
+* Video: direct draw
+* Sound: no
+* Main menu: draw background
+* Map room: no
+* Shop room: no
+* Briefing room: no
+* Game process: no
 
 # Contributing
 Contributors, welcome. Create a fork, then create a branch. Modify the source code. Finally, create a pull request to merge with my main branch.
 
-IDA .idb file [here](https://www.dropbox.com/s/e8m6ut1lhwfwlia/bedlamidb.zip?dl=0).
+IDA .idb reverse file [here](https://www.dropbox.com/s/e8m6ut1lhwfwlia/bedlamidb.zip?dl=0).
 
 # Compilling
 1. Open msvc/OpenBedlam.sln in Visual Studio 2019
