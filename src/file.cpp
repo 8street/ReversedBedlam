@@ -52,8 +52,8 @@ int File::set_data()
     std::ifstream file;
     file.open( get_full_path().c_str(), std::ios_base::in | std::ios_base::binary );
     if( !file.is_open() ) {
-        return 1;
         //std::cout << "not present file";
+        exit(404);
     }
 
     // get filesize

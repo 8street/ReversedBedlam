@@ -38,3 +38,5 @@ void activate_app(int32_t activate);
 void get_screen_buffer_ptr();
 HRESULT unlock_surface_and_screen_ptr();
 HRESULT ddraw_setpalletes(uint8_t* pal_ptr, int16_t offset, int16_t num_entries);
+void redraw();
+void copy_buffer_to_screen_and_unlock(uint8_t* buffer);

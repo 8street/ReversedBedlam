@@ -18,7 +18,6 @@
 *.sdf
 *.suo
 *.user
-*.vcxproj.filters
 .vs/
 .vscode/
 Debug*/

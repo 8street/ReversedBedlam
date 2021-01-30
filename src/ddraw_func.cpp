@@ -721,3 +721,27 @@ HRESULT ddraw_setpalletes(uint8_t* pal_ptr, int16_t offset, int16_t num_entries)
     }
     return ret;
 }
+
+//00425A03
+void redraw()
+{
+    unlock_surface();
+    SCREEN_BUFFER_PTR = 0;
+    blit_second_surface_to_screen();
+}
+
+void copy_buffer_to_screen_and_unlock(uint8_t* buffer)
+{
+    int i; // [esp+0h] [ebp-20h]
+    uint8_t* destin; // [esp+4h] [ebp-1Ch]
+
+    get_screen_buffer_ptr();
+    destin = SCREEN_BUFFER_PTR;
+    for (i = 0; i < (int32_t)GAME_HEIGHT; ++i)
+    {
+        memcpy(destin, buffer, SCREEN_SURFACE_WIDTH);
+        buffer += SCREEN_SURFACE_WIDTH;
+        destin += SCREEN_SURFACE_WIDTH;
+    }
+    unlock_surface_and_screen_ptr();
+}
