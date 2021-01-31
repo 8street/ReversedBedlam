@@ -1,7 +1,7 @@
 #pragma once
 #include <stdint.h>
 
-extern uint8_t PRESSED_KEY_ARR[267];
+extern uint8_t PRESSED_KEY_ARR[257];
 
 extern uint8_t KEY_ESC;
 extern uint8_t KEY_F1;

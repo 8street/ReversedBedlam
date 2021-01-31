@@ -6,6 +6,7 @@
 #include "helper.h"
 #include "keyboard.h"
 #include "main.h"
+#include "mouse.h"
 #include "variables.h"
 #include "window.h"
 
@@ -207,38 +208,37 @@ LRESULT WindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
         return DefWindowProcA(hWnd, (UINT)Msg, wParam, lParam);
     }
 
+    if (Msg == WM_LBUTTONUP)
+    {
+        mouse_buttons(0, 1);
+        return DefWindowProcA(hWnd, (UINT)Msg, wParam, lParam);
+    }
+    else if (Msg == WM_LBUTTONDBLCLK)
+    {
+        mouse_buttons(0, 2);
+        return DefWindowProcA(hWnd, (UINT)Msg, wParam, lParam);
+    }
+    else if (Msg == WM_RBUTTONDOWN)
+    {
+        mouse_buttons(1, 0);
+        return DefWindowProcA(hWnd, (UINT)Msg, wParam, lParam);
+    }
+    else if (Msg == WM_RBUTTONUP)
+    {
+        mouse_buttons(1, 1);
+        return DefWindowProcA(hWnd, (UINT)Msg, wParam, lParam);
+    }
+    else if (Msg == WM_RBUTTONDBLCLK)
+    {
+        mouse_buttons(1, 2);
+        return DefWindowProcA(hWnd, (UINT)Msg, wParam, lParam);
+    }
+    if (Msg == WM_LBUTTONDOWN) {
+        mouse_buttons(0, 0);
+        return DefWindowProcA(hWnd, (UINT)Msg, wParam, lParam);
+    }
 
-    if ((unsigned int)Msg >= WM_LBUTTONUP)
-    {
-        if ((unsigned int)Msg == WM_LBUTTONUP)
-        {
-            //mouse_buttons(0, 1);
-        }
-        else if ((unsigned int)Msg == WM_LBUTTONDBLCLK)
-        {
-            //mouse_buttons(0, 2);
-        }
-        else if ((unsigned int)Msg == WM_RBUTTONDOWN)
-        {
-            // mouse_buttons(1, 0);
-        }
-        else if ((unsigned int)Msg == WM_RBUTTONUP)
-        {
-            // mouse_buttons(1, 1);
-        }
-        else if (Msg == WM_RBUTTONDBLCLK)
-        {
-            // mouse_buttons(1, 2);
-        }
-        return DefWindowProcA(hWnd, (UINT)Msg, wParam, lParam);
-    }
-    if (Msg > WM_SYSCOMMAND)
-    {
-        if (Msg == WM_LBUTTONDOWN) {
-            //mouse_buttons(0, 0);
-        }
-        return DefWindowProcA(hWnd, (UINT)Msg, wParam, lParam);
-    }
+
     if (wParam >= 0xF100)
     {
         if (wParam > 0xF100)
