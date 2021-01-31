@@ -3,9 +3,11 @@
 #include <WinUser.h>
 
 #include "ddraw_func.h"
-#include "window.h"
+#include "helper.h"
+#include "keyboard.h"
 #include "main.h"
 #include "variables.h"
+#include "window.h"
 
 HWND WINDOW_HWND;
 
@@ -190,57 +192,64 @@ LRESULT WindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
         return 1;
 
     }
-
-
-    if ((unsigned int)Msg >= WM_KEYDOWN)
+    if (Msg == WM_KEYDOWN)
     {
-        if ((unsigned int)Msg >= WM_LBUTTONUP)
-        {
-            if ((unsigned int)Msg == WM_LBUTTONUP)
-            {
-                //mouse_buttons(0, 1);
-            }
-            else if ((unsigned int)Msg == WM_LBUTTONDBLCLK)
-            {
-                //mouse_buttons(0, 2);
-            }
-            else if ((unsigned int)Msg == WM_RBUTTONDOWN)
-            {
-                // mouse_buttons(1, 0);
-            }
-            else if ((unsigned int)Msg == WM_RBUTTONUP)
-            {
-                // mouse_buttons(1, 1);
-            }
-            else if (Msg == WM_RBUTTONDBLCLK)
-            {
-                // mouse_buttons(1, 2);
-            }
-            return DefWindowProcA(hWnd, (UINT)Msg, wParam, lParam);
+        if (BYTE2(lParam) == 70) {
+            //save_screenshot();
         }
-        if ((unsigned int)Msg < WM_SYSCOMMAND)
-        {
-            if (Msg == WM_KEYUP)
-                //keyboard(BYTE2(lParam), 1);
-                return DefWindowProcA(hWnd, (UINT)Msg, wParam, lParam);
+        else {
+            keyboard(BYTE2(lParam), 0);
         }
-        if ((unsigned int)Msg > WM_SYSCOMMAND)
-        {
-            if (Msg == WM_LBUTTONDOWN)
-                //mouse_buttons(0, 0);
-                return DefWindowProcA(hWnd, (UINT)Msg, wParam, lParam);
-        }
-        if (wParam >= 0xF100)
-        {
-            if (wParam > 0xF100)
-            {
-                if (wParam != 0xF140)
-                    return DefWindowProcA(hWnd, (UINT)Msg, wParam, lParam);
-                return 1;
-            }
-            //keyboard(68, 0);
-        }
+        return DefWindowProcA(hWnd, (UINT)Msg, wParam, lParam);
     }
+    if (Msg == WM_KEYUP) {
+        keyboard(BYTE2(lParam), 1);
+        return DefWindowProcA(hWnd, (UINT)Msg, wParam, lParam);
+    }
+
+
+    if ((unsigned int)Msg >= WM_LBUTTONUP)
+    {
+        if ((unsigned int)Msg == WM_LBUTTONUP)
+        {
+            //mouse_buttons(0, 1);
+        }
+        else if ((unsigned int)Msg == WM_LBUTTONDBLCLK)
+        {
+            //mouse_buttons(0, 2);
+        }
+        else if ((unsigned int)Msg == WM_RBUTTONDOWN)
+        {
+            // mouse_buttons(1, 0);
+        }
+        else if ((unsigned int)Msg == WM_RBUTTONUP)
+        {
+            // mouse_buttons(1, 1);
+        }
+        else if (Msg == WM_RBUTTONDBLCLK)
+        {
+            // mouse_buttons(1, 2);
+        }
+        return DefWindowProcA(hWnd, (UINT)Msg, wParam, lParam);
+    }
+    if (Msg > WM_SYSCOMMAND)
+    {
+        if (Msg == WM_LBUTTONDOWN) {
+            //mouse_buttons(0, 0);
+        }
+        return DefWindowProcA(hWnd, (UINT)Msg, wParam, lParam);
+    }
+    if (wParam >= 0xF100)
+    {
+        if (wParam > 0xF100)
+        {
+            if (wParam != 0xF140)
+                return DefWindowProcA(hWnd, (UINT)Msg, wParam, lParam);
+            return 1;
+        }
+        keyboard(68, 0);
+    }
+
     return DefWindowProcA(hWnd, (UINT)Msg, wParam, lParam);
 }
 

@@ -51,6 +51,9 @@
     <ClInclude Include="..\src\draw_text.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\keyboard.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\map_room.cpp">
@@ -96,6 +99,9 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\src\draw_text.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\keyboard.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
