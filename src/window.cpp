@@ -194,16 +194,16 @@ LRESULT WindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
     }
     if (Msg == WM_KEYDOWN)
     {
-        if (BYTE2(lParam) == 70) {
+        if (BYTE2(static_cast<uint32_t>(lParam)) == 70) {
             //save_screenshot();
         }
         else {
-            keyboard(BYTE2(lParam), 0);
+            keyboard(BYTE2(static_cast<uint32_t>(lParam)), 0);
         }
         return DefWindowProcA(hWnd, (UINT)Msg, wParam, lParam);
     }
     if (Msg == WM_KEYUP) {
-        keyboard(BYTE2(lParam), 1);
+        keyboard(BYTE2(static_cast<uint32_t>(lParam)), 1);
         return DefWindowProcA(hWnd, (UINT)Msg, wParam, lParam);
     }
 
