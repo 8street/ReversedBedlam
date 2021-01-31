@@ -4,6 +4,7 @@
 #include "file.h"
 #include "draw_img.h"
 #include "draw_text.h"
+#include "keyboard.h"
 #include "main_menu.h"
 #include "mouse.h"
 #include "palette.h"
@@ -32,6 +33,9 @@ int32_t main_menu() {
         set_and_hide_cursor();
         unlock_surface_and_screen_ptr();
         redraw();
+        if (KEY_ESC) {
+            break;
+        }
     }
 
 return 0;
