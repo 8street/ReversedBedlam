@@ -2,6 +2,7 @@
 
 #include "core.h"
 #include "ddraw_func.h"
+#include "game_level.h"
 #include "helper.h"
 #include "mouse.h"
 #include "window.h"
@@ -23,36 +24,47 @@ uint8_t CURSOR_IS_HIDDEN;
 int32_t CURSOR_POS_X;
 int32_t CURSOR_POS_Y;
 
+int32_t CURSOR_POS_LCLICK_X;
+int32_t CURSOR_POS_LCLICK_Y;
+int32_t CURSOR_POS_RCLICK_X;
+int32_t CURSOR_POS_RCLICK_Y;
+
 uint32_t CURSOR_UNKNOWN;
 uint8_t CURSOR_IS_BLITTING;
+
+int32_t MOUSE_BUTTONS_STATE;
+int32_t MOUSE_BUTTONS_STATE1;
+
+uint8_t mouse_click;
 
 //00425AB9
 void mouse_update()
 {
-    //int icon; // eax
+    int icon; // eax
     LONG pos_x; // [esp+0h] [ebp-1Ch] BYREF
     LONG pos_y; // [esp+4h] [ebp-18h] OVERLAPPED BYREF
+    uint32_t prev_state;
+    uint32_t mouse_up = 0;
 
-
-    ////if ((mouse_buttons_state1 & 2) != 0)
-    ////    dword_4EDE60 = 1;
-    //v2 = mouse_r_button_up;
-    //if (!mouse_r_button_up)
-    //{
-    //    if ((mouse_buttons_state1 & 3) != 0)
-    //    {
-    //        if (dword_4EDB48)
-    //        {
-    //            mouse_r_button_up = 1;
-    //            dword_4EDB48 = v2;
-    //        }
-    //    }
-    //    else
-    //    {
-    //        dword_4EDB48 = 1;
-    //    }
-    //}
-    //mouse_buttons_state1 = mouse_buttons_state;
+    //if ((MOUSE_BUTTONS_STATE1 & 2) != 0)
+    //    mouse_r_click1 = 1;
+    prev_state = mouse_click;
+    if (!mouse_click)
+    {
+        if ((MOUSE_BUTTONS_STATE1 & 3) != 0)
+        {
+            if (mouse_up)
+            {
+                mouse_click = 1;
+                mouse_up = prev_state;
+            }
+        }
+        else
+        {
+            mouse_up = 1;
+        }
+    }
+    MOUSE_BUTTONS_STATE1 = MOUSE_BUTTONS_STATE;
     get_cursor_pos(&pos_x, &pos_y);
     pos_x += 9;
     pos_y += 9;
@@ -66,25 +78,27 @@ void mouse_update()
         pos_y = 463;
     CURSOR_POS_X = pos_x;
     CURSOR_POS_Y = pos_y;
-    //if ((mouse_buttons_state1 & 1) != 0)
-    //{
-    //    cursor_pos_lclick_x = CURSOR_POS_X;
-    //    cursor_pos_lclick_y = CURSOR_POS_Y;
-    //}
-    //if ((mouse_buttons_state1 & 2) != 0)
-    //{
-    //    cursor_pos_rclick_x = CURSOR_POS_X;
-    //    cursor_pos_rclick_y = CURSOR_POS_Y;
-    //}
+    if ((MOUSE_BUTTONS_STATE1 & 1) != 0)
+    {
+        CURSOR_POS_LCLICK_X = CURSOR_POS_X;
+        CURSOR_POS_LCLICK_Y = CURSOR_POS_Y;
+    }
+    if ((MOUSE_BUTTONS_STATE1 & 2) != 0)
+    {
+        CURSOR_POS_RCLICK_X = CURSOR_POS_X;
+        CURSOR_POS_RCLICK_Y = CURSOR_POS_Y;
+    }
     
-    //if (game_is_playing)
-    //{
-    //    if (CURSOR_POS_X < 480)
-    //        icon = 0;
-    //    else
-    //        icon = 93;
-    //    set_cursor_icon((_BYTE*)icon);
-    //}
+    if (GAME_IS_PLAYING)
+    {
+        if (CURSOR_POS_X < 480) {
+            icon = 0;
+        }
+        else {
+            icon = 93;
+        }
+        set_cursor_icon(icon);
+    }
 }
 
 //0041D714
@@ -218,4 +232,25 @@ void hide_cursor()
 {
     CURSOR_X1 = -1;
     CURSOR_HIDDEN = 1;
+}
+
+//0041BF35
+void mouse_buttons(uint16_t r_butt, uint16_t l_button)
+{
+    if (!r_butt && !l_button)
+    {
+        MOUSE_BUTTONS_STATE |= 1;
+    }
+    if (!r_butt && l_button == 1)
+    {
+        MOUSE_BUTTONS_STATE &= 0xFE;
+    }
+    if (r_butt == 1 && !l_button) 
+    {
+        MOUSE_BUTTONS_STATE |= 2u;
+    }
+    if (r_butt == 1 && l_button == 1) 
+    {
+        MOUSE_BUTTONS_STATE &= 0xFFFFFFFD;
+    }
 }

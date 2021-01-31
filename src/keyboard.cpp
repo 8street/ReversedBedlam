@@ -1,6 +1,6 @@
 #include "keyboard.h"
 
-uint8_t PRESSED_KEY_ARR[267];
+uint8_t PRESSED_KEY_ARR[257];
 
 uint8_t KEY_ESC;
 uint8_t KEY_F1;
