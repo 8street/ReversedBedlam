@@ -8,6 +8,8 @@
 uint32_t TIMER_RESOLUTION;
 MMRESULT TIMER_EVENT;
 
+int32_t WAITING_TIMER;
+
 //0044DA64
 int init_timer()
 {
@@ -26,8 +28,8 @@ void timer_callback(UINT uTimerID, UINT uMsg, DWORD_PTR dwUser, DWORD_PTR dw1, D
     struct tagPOINT cursor; // [esp+0h] [ebp-8h] BYREF
 
     timer_update();
-    // Maybe never execute 
-    if (*(int*)((char*)&DDRAW_SURFACE_CLIPPER + 2) >> 16 == 1)
+
+    if (CURSOR_HIDDEN == 1 && !IS_BLITTING)
     {
         //word_4EF708 = 0;
         GetCursorPos(&cursor);
@@ -47,11 +49,11 @@ void timer_update()
     mouse_update();
 
     // animated cursor
-    if (CURSOR_ICON2 >= 144 && CURSOR_ICON2 < 152)// && (PALETTE_TIMER & 7) == 0)
+    if (CURSOR_ICON2 >= ICON_WAIT && CURSOR_ICON2 < 152 && (cursor_timer & 7) == 0)
     {
         ++CURSOR_ICON2;
         if (CURSOR_ICON2 == 151) {
-            CURSOR_ICON2 = 144;
+            CURSOR_ICON2 = ICON_WAIT;
         }
         set_cursor_icon(CURSOR_ICON2);
     }
@@ -60,14 +62,25 @@ void timer_update()
 //00402B0C
 void increment_timers()
 {
-    //++timer1;
-    //++PALETTE_TIMER;
-    //++main_menu_timer;
-    //++timer3;
-    //++game_update_timer;
+    
+    //timer1++;
+    //PALETTE_TIMER++;
+    WAITING_TIMER++;
+    //timer3++;
+    //game_update_timer++;
     //level_clock();
     if (PALETTE_TIMER)
     {
         palette_animation();
+    }
+}
+
+//0041E215
+void unlock_surface_and_wait(int32_t time_to_waiting)
+{
+    unlock_surface_and_screen_ptr();
+    WAITING_TIMER = 0;
+    while (time_to_waiting > WAITING_TIMER) {
+        ;
     }
 }

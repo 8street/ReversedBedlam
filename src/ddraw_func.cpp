@@ -1,10 +1,11 @@
 #include "ddraw_func.h"
 #include "main.h"
 #include "mouse.h"
+#include "timers.h"
 #include "window.h"
 
-uint32_t GAME_WIDTH = 640;
-uint32_t GAME_HEIGHT = 480;
+int32_t GAME_WIDTH = 640;
+int32_t GAME_HEIGHT = 480;
 
 
 
@@ -302,8 +303,8 @@ void clear_and_blit_screen() {
     int attempt1; // edx
     int attempt2; // edx
     uint8_t* surface_ptr1; // ebx
-    uint32_t y; // esi
-    uint32_t x; // ecx
+    int32_t y; // esi
+    int32_t x; // ecx
     //int x1; // eax
     uint8_t* surface_ptr2; // ebx
     int attempt3; // ecx
@@ -542,6 +543,7 @@ int blit_second_surface_to_screen()
     return result;
 }
 
+//0044B4FC
 int blit_cursor(int x, int y)
 {
     int result = 0; // eax
@@ -664,7 +666,7 @@ HRESULT unlock_surface_and_screen_ptr()
 }
 
 //0044AED4
-HRESULT ddraw_setpalletes(uint8_t* pal_ptr, int16_t offset, int16_t num_entries)
+HRESULT ddraw_setpalettes(uint8_t* pal_ptr, int16_t offset, int16_t num_entries)
 {
     int32_t entry; // edx
     int32_t ofst; // ebx
@@ -788,4 +790,42 @@ HRESULT Set_Cursor_ColorKey(int16_t color_range)
     colorkey.dwColorSpaceLowValue = color_range;
     colorkey.dwColorSpaceHighValue = color_range;
     return DDRAW_GAMECURSOR_SURFACE->SetColorKey(DDCKEY_SRCBLT, &colorkey);
+}
+
+//0042597C
+void clear_screen()
+{
+    uint8_t* screen_buf_ptr; // ebx
+    int i; // ecx
+    uint8_t* screen_buf_ptr1; // eax
+    uint8_t* screen_buf_ptr2; // ebx
+    int j; // ecx
+    uint8_t* screen_buf_ptr3; // eax
+
+    get_screen_buffer_ptr();
+    screen_buf_ptr = SCREEN_BUFFER_PTR;
+    for (i = 0; i < 480; ++i)
+    {
+        screen_buf_ptr1 = screen_buf_ptr;
+        do
+        {
+            *(DWORD*)screen_buf_ptr1 = 0;
+            screen_buf_ptr1 += 4;
+        } while (screen_buf_ptr1 != screen_buf_ptr + 640);
+        screen_buf_ptr += SCREEN_SURFACE_WIDTH;
+    }
+    redraw();
+    get_screen_buffer_ptr();
+    screen_buf_ptr2 = SCREEN_BUFFER_PTR;
+    for (j = 0; j < 480; ++j)
+    {
+        screen_buf_ptr3 = screen_buf_ptr2;
+        do
+        {
+            *(DWORD*)screen_buf_ptr3 = 0;
+            screen_buf_ptr3 += 4;
+        } while (screen_buf_ptr3 != screen_buf_ptr2 + 640);
+        screen_buf_ptr2 += SCREEN_SURFACE_WIDTH;
+    }
+    redraw();
 }

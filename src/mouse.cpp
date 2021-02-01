@@ -35,7 +35,7 @@ uint8_t CURSOR_IS_BLITTING;
 int32_t MOUSE_BUTTONS_STATE;
 int32_t MOUSE_BUTTONS_STATE1;
 
-uint8_t mouse_click;
+uint8_t MOUSE_CLICK;
 
 //00425AB9
 void mouse_update()
@@ -48,14 +48,14 @@ void mouse_update()
 
     //if ((MOUSE_BUTTONS_STATE1 & 2) != 0)
     //    mouse_r_click1 = 1;
-    prev_state = mouse_click;
-    if (!mouse_click)
+    prev_state = MOUSE_CLICK;
+    if (!MOUSE_CLICK)
     {
         if ((MOUSE_BUTTONS_STATE1 & 3) != 0)
         {
             if (mouse_up)
             {
-                mouse_click = 1;
+                MOUSE_CLICK = 1;
                 mouse_up = prev_state;
             }
         }
@@ -92,10 +92,10 @@ void mouse_update()
     if (GAME_IS_PLAYING)
     {
         if (CURSOR_POS_X < 480) {
-            icon = 0;
+            icon = ICON_CROSSHAIR;
         }
         else {
-            icon = 93;
+            icon = ICON_CURSOR;
         }
         set_cursor_icon(icon);
     }
@@ -122,7 +122,7 @@ void set_cursor_icon(int32_t icon)
             CURSOR_SURFACE_IS_LOCKED = 1;
             show_cursor(24);
             Set_Cursor_ColorKey(0);
-            if (icon >= 144 && icon < 152)
+            if (icon >= ICON_WAIT && icon < 152)
             {
                 cursor_surface = lock_and_get_cursor_surface();
                 if (!cursor_surface) {
@@ -140,7 +140,7 @@ void set_cursor_icon(int32_t icon)
             }
             clear_buffer(1024u, cursor_surface);
             pos = cursor_surface + 24;
-            general = general_bin.get_ptr();
+            general = GENERAL_BIN.get_ptr();
             cursor_pos = &general[4 * icon1 + 8 + *(uint32_t*)&general[4 * icon1 + 2]];
             for (i = 0; i < 24; ++i)
             {

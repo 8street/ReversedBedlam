@@ -54,7 +54,7 @@ int init_window(HINSTANCE hwnd, HINSTANCE prev_hwnd, LPSTR lp_cmd_line) {
     {
         WNDCLASSEXA classex;
         classex.cbSize = sizeof(classex);
-        classex.style = 3;
+        classex.style = CS_VREDRAW | CS_HREDRAW;
         //if (dword_4EDECE >> 16 == 1)
         //    classex.style = 11;
         classex.hInstance = hwnd;
@@ -88,8 +88,8 @@ int init_window(HINSTANCE hwnd, HINSTANCE prev_hwnd, LPSTR lp_cmd_line) {
     }
     else
     {
-        WINDOW_WIDTH = GAME_WIDTH + 2;
-        WINDOW_HEIGHT = GAME_HEIGHT + 21;
+        WINDOW_WIDTH = GAME_WIDTH + 16;
+        WINDOW_HEIGHT = GAME_HEIGHT + 75;
         dwStyle = 0xCA0000;
         WINDOW_POS_X = (display_width - WINDOW_WIDTH) / 2;
         WINDOW_POS_Y = (display_height - WINDOW_HEIGHT) / 2;
@@ -155,8 +155,8 @@ LRESULT WindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
     }
     if (Msg == WM_MOVE && !FULLSCREEN)
     {
-        WINDOW_POS_X = lParam & 0xFFFF;
-        WINDOW_POS_Y = (lParam >> 16) & 0xFFFF;
+        WINDOW_POS_X = LOWORD(lParam);
+        WINDOW_POS_Y = HIWORD(lParam);
         InvalidateRect(WINDOW_HWND, 0, 0);
     }
     if (Msg == WM_SIZE && !FULLSCREEN)
@@ -253,7 +253,6 @@ LRESULT WindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
     return DefWindowProcA(hWnd, (UINT)Msg, wParam, lParam);
 }
 
-
 //0044D93C
 WPARAM message_dispatcher()
 {
@@ -277,4 +276,21 @@ WPARAM message_dispatcher()
         }
     }
     return Msg.wParam;
+}
+
+//0041C9F0
+void destroy()
+{
+    //free_mem();
+    Sleep(500u);
+    send_destroy_message();
+    while (1) {
+        ;
+    }
+}
+
+//0044DA00
+LRESULT send_destroy_message()
+{
+    return SendMessageA(WINDOW_HWND, 2u, 0, 0);
 }

@@ -20,7 +20,7 @@ void set_palette(uint8_t* pal_file)
         num_entries = 256;
     }
     unlock_surface_and_screen_ptr();
-    ddraw_setpalletes(pal_ptr, offset, num_entries);
+    ddraw_setpalettes(pal_ptr, offset, num_entries);
 }
 
 //00425901
@@ -39,7 +39,7 @@ void palette_animation()
         ANIMATE_PALETTE_PTR[ofst++] = HIBYTE(color);
         buf_ofst += 4;
     } while (ofst < 768);
-    ddraw_setpalletes(ANIMATE_PALETTE_PTR, 0, 256);
+    ddraw_setpalettes(ANIMATE_PALETTE_PTR, 0, 256);
     PALETTE_TIMER--;
 }
 

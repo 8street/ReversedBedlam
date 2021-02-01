@@ -57,6 +57,9 @@
     <ClInclude Include="..\src\game_level.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\briefing_room.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\map_room.cpp">
@@ -108,6 +111,9 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\src\game_level.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\briefing_room.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
