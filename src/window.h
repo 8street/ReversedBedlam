@@ -13,3 +13,5 @@ extern int32_t WINDOW_HEIGHT;
 int init_window(HINSTANCE hwnd, HINSTANCE prev_hwnd, LPSTR lp_cmd_line);
 LRESULT WindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 WPARAM message_dispatcher();
+void destroy();
+LRESULT send_destroy_message();

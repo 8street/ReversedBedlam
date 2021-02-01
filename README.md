@@ -7,8 +7,10 @@ Not playable yet.
 
 * Video: direct draw
 * Sound: no
-* Main menu: draw background
-* Map room: no
+* Mouse: yes
+* Keyboard: yes
+* Main menu: partially functioning
+* Map room: draw background
 * Shop room: no
 * Briefing room: no
 * Game process: no
@@ -16,7 +18,7 @@ Not playable yet.
 # Contributing
 Contributors, welcome. Create a fork, then create a branch. Modify the source code. Finally, create a pull request to merge with my main branch.
 
-IDA .idb reverse file [here](https://www.dropbox.com/s/e8m6ut1lhwfwlia/bedlamidb.zip?dl=0).
+IDA .idb reverse file [here](https://www.dropbox.com/sh/h0yyypzx8gjkn9c/AABBuR-fwNthYnOYPf7VH-Q7a?dl=0).
 
 # Compilling
 1. Open msvc/OpenBedlam.sln in Visual Studio 2019

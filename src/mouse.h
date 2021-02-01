@@ -27,6 +27,12 @@ extern int32_t CURSOR_POS_LCLICK_Y;
 extern int32_t CURSOR_POS_RCLICK_X;
 extern int32_t CURSOR_POS_RCLICK_Y;
 
+enum CURSOR_ICON {
+    ICON_CROSSHAIR = 0,
+    ICON_CURSOR = 93,
+    ICON_WAIT = 144,
+};
+
 
 void mouse_update();
 void set_cursor_icon(int32_t icon);

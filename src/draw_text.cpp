@@ -2,6 +2,7 @@
 
 #include "draw_img.h"
 #include "draw_text.h"
+#include "main_menu.h"
 
 char Special_symbol;
 
@@ -229,4 +230,29 @@ char get_special_symbol_code(char in_char)
         }
     }
     return retVal;
+}
+
+//0044653A
+void draw_menu_text(int32_t selected, uint8_t* font_ptr)
+{
+    int text_pos_y; // edi
+    int color; // ecx
+    int line; // [esp+8h] [ebp-18h]
+
+    line = 0;
+    int32_t num_lines = static_cast<int32_t>(MENU_TEXT_ARR.size());
+
+    text_pos_y = 470 - 24 * num_lines;
+
+    while (line < num_lines)
+    {
+        color = 0;
+        if (line == selected)
+        {
+            color = 130;
+        }
+        draw_text(MENU_TEXT_ARR[line].c_str(), font_ptr, text_pos_y, color);
+        text_pos_y += 24;
+        line++;
+    }
 }
