@@ -4,24 +4,37 @@
 
 File::File()
 {
-
+    m_file_size = 0;
 }
 
 File::File(const std::string &path ) : m_file( path )
 {
-    set_data();
+    load_data();
 }
+
+int File::load(const std::string& path)
+{
+    const std::filesystem::path new_path = path;
+    if (new_path == m_file && m_file_size) {
+        return 0;
+    }
+    return set_path(path);
+}
+
 
 int File::set_path(const std::string& path)
 {
-
+    int retval = 0;
     const std::filesystem::path old_path = m_file;
     m_file = path;
-    const int retval = set_data();
 
-    if( retval ) {
-        // error here, return to old path
+    if (std::filesystem::exists(m_file))
+    {
+        retval = load_data();
+    }
+    else {
         m_file = old_path;
+        retval = 1;
     }
 
     return retval;
@@ -47,7 +60,7 @@ std::string File::get_extension() const
     return m_file.extension().string();
 }
 
-int File::set_data()
+int File::load_data()
 {
     std::ifstream file;
     file.open( get_full_path().c_str(), std::ios_base::in | std::ios_base::binary );
@@ -61,16 +74,14 @@ int File::set_data()
     const std::ifstream::pos_type file_end_pos = file.tellg();
     file.seekg( 0, std::ios::beg );
 
-    const int file_size = static_cast<int>( file_end_pos );
+    m_file_size = static_cast<size_t>( file_end_pos );
 
     m_data.clear();
-    m_data.resize( file_size );
+    m_data.resize( m_file_size );
 
-    file.read( ( char * )&m_data[0], file_size );
+    file.read( ( char * )&m_data[0], static_cast<std::streamsize>(m_file_size) );
 
     file.close();
-    //std::cout << "file: " + get_full_path();
-    //std::cout << " firsts bytes: " + std::to_string( m_data.at(0)) + " " + std::to_string(m_data.at(1)) << std::endl;
     return 0;
 }
 
@@ -84,7 +95,13 @@ const uint8_t* File::get_ptr() const
 {
     return m_data.data();
 }
+
 uint8_t* File::get_ptr()
 {
     return m_data.data();
+}
+
+size_t File::get_size() const
+{
+    return m_file_size;
 }

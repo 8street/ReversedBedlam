@@ -11,25 +11,22 @@
 #include "palette.h"
 #include "timers.h"
 
-uint8_t Background_buf[307200u];
-
 std::vector<std::string> MENU_TEXT_ARR;
 
 enum meny_type {
     UNKNOWN = 0,
     SINGLE_GAME,
     COOPERATIVE_GAME,
-    LOAD_SAVE_GAME,
-    LOAD_COOPERATIVE_GAME,
-    EXIT_GAME,
+    LOAD_SAVED_GAME,
+    SAVE_GAME,
+    EXIT_TO_WINDOWS,
 };
 
 
 
 //0044A9AC
 int32_t main_menu() {
-    int32_t exit = 0;
-    int32_t map_room = 0;
+    int32_t exit_code = NO_EXIT_ROOM;
     int32_t selected = -1;
     int32_t old_selected = -1;
     int32_t num_menu_lines = 0;
@@ -39,6 +36,8 @@ int32_t main_menu() {
     uint8_t white_text_pal[770];
     uint8_t black_text_pal[770];
     uint8_t* main_menu_palette = LOADPALU_PAL.get_ptr();
+
+    memset(BACKGROUND_BUF, 0, sizeof(BACKGROUND_BUF));
     
     memcpy(white_text_pal, main_menu_palette, 770);
     memcpy(black_text_pal, main_menu_palette, 770);
@@ -49,16 +48,16 @@ int32_t main_menu() {
         black_text_pal[i + 697] = 0;
     }
 
-    draw_main_menu_background_IMG(LOAD_US_BIN.get_ptr(), main_menu_palette, Background_buf);
+    draw_main_menu_background_IMG(LOAD_US_BIN.get_ptr(), main_menu_palette, BACKGROUND_BUF);
 
-    while (!exit && !map_room) {
+    while (exit_code == NO_EXIT_ROOM) {
 
         // cursor
         set_cursor_icon(ICON_CURSOR);
-        set_and_hide_cursor();
+        draw_cursor_by_timer();
 
         // background
-        copy_buffer_to_screen_and_unlock(Background_buf);
+        copy_buffer_to_screen_and_unlock(BACKGROUND_BUF);
 
         // draw white fading menu text
         if (menu_type != old_menu_type) {
@@ -67,7 +66,7 @@ int32_t main_menu() {
             set_palette(white_text_pal);
             swap_palette_with_animation(main_menu_palette, 10);
             redraw();
-            unlock_surface_and_wait(32);
+            //unlock_surface_and_wait(32);
             old_menu_type = menu_type;
         }
 
@@ -96,7 +95,7 @@ int32_t main_menu() {
             set_palette(black_text_pal);
             swap_palette_with_animation(main_menu_palette, 10);
             redraw();
-            wait_palette_animation(0);
+            //wait_palette_animation(0);
             old_selected = selected;
         }
         // drawing
@@ -104,7 +103,8 @@ int32_t main_menu() {
         redraw();
 
         // click to menu item
-        if (selected != -1 && MOUSE_BUTTONS_STATE1) {
+        if (selected != -1 && MOUSE_BUTTONS_STATE1 && BUTTON_TIMER > 32) {
+            BUTTON_TIMER = 0;
             switch (menu_type)
             {
             case SINGLE_GAME:
@@ -115,10 +115,10 @@ int32_t main_menu() {
                     break;
                 case 0:
                     // Play Single game
-                    map_room = 1;
+                    exit_code = MAP_ROOM;
                     break;
                 case 1:
-                    menu_type = LOAD_SAVE_GAME;
+                    menu_type = LOAD_SAVED_GAME;
                     break;
                 case 2:
                     DIFFICULTY++;
@@ -133,7 +133,7 @@ int32_t main_menu() {
                 case 5:
                     break;
                 case 6:
-                    menu_type = EXIT_GAME;
+                    menu_type = EXIT_TO_WINDOWS;
                     break;
                 default:
                     break;
@@ -141,25 +141,25 @@ int32_t main_menu() {
                 break;
             case COOPERATIVE_GAME:
                 break;
-            case LOAD_SAVE_GAME:
+            case LOAD_SAVED_GAME:
                 switch (selected)
                 {
                 case -1:
                     break;
                 case 0:
-                    map_room = 1;
+                    exit_code = MAP_ROOM;
                     break;
                 case 1:
-                    map_room = 1;
+
                     break;
                 case 2:
-                    map_room = 1;
+
                     break;
                 case 3:
-                    map_room = 1;
+
                     break;
                 case 4:
-                    map_room = 1;
+
                     break;
                 case 5:
                     menu_type = SINGLE_GAME;
@@ -168,11 +168,11 @@ int32_t main_menu() {
                     break;
                 }
                 break;
-            case LOAD_COOPERATIVE_GAME:
+            case SAVE_GAME:
                 break;
-            case EXIT_GAME:
+            case EXIT_TO_WINDOWS:
                 if (!selected) {
-                    exit = 1;
+                    exit_code = CLOSE_GAME;
                 }
                 if (selected == 1) {
                     menu_type = SINGLE_GAME;
@@ -182,21 +182,15 @@ int32_t main_menu() {
                 break;
             }
             selected = -1;
-            unlock_surface_and_wait(32);
         }
 
         //if (KEY_ESC) {
-        //    exit = 1;
+        //    exit_code = 1;
         //    KEY_ESC = 0;
         //}
     }
 
-    if (map_room) {
-        return MAP_ROOM;
-    }
-    else {
-        return CLOSE_GAME;
-    }
+    return exit_code;
 }
 
 //00445B5C
@@ -231,7 +225,7 @@ void construct_menu(int32_t menu_type)
         break;
 
     // Start Saved Game
-    case LOAD_SAVE_GAME:
+    case LOAD_SAVED_GAME:
         MENU_TEXT_ARR.push_back("Player 1");
         MENU_TEXT_ARR.push_back("NONE");
         MENU_TEXT_ARR.push_back("NONE");
@@ -240,11 +234,16 @@ void construct_menu(int32_t menu_type)
         MENU_TEXT_ARR.push_back("Main Menu");
         break;
 
-    // Start cooperative saves maybe
-    case LOAD_COOPERATIVE_GAME:
-
+    // Save game
+    case SAVE_GAME:
+        MENU_TEXT_ARR.push_back("Player 1");
+        MENU_TEXT_ARR.push_back("NONE");
+        MENU_TEXT_ARR.push_back("NONE");
+        MENU_TEXT_ARR.push_back("NONE");
+        MENU_TEXT_ARR.push_back("NONE");
+        MENU_TEXT_ARR.push_back("Main Menu");
     // Quit to Windows
-    case EXIT_GAME:
+    case EXIT_TO_WINDOWS:
         MENU_TEXT_ARR.push_back("Quit to Windows");
         MENU_TEXT_ARR.push_back("Main Menu");
         break;

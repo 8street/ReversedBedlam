@@ -34,6 +34,7 @@ void palette_animation()
     buf_ofst = 0;
     do
     {
+        // color = steep + old_color 
         color = *(WORD*)&ANIMATE_PALETTE_BUFER[buf_ofst + 2] + *(WORD*)&ANIMATE_PALETTE_BUFER[buf_ofst];
         *(WORD*)&ANIMATE_PALETTE_BUFER[buf_ofst] = color;
         ANIMATE_PALETTE_PTR[ofst++] = HIBYTE(color);
@@ -49,10 +50,9 @@ void swap_palette_with_animation(uint8_t* palette_file_ptr, int time)
     uint8_t* palette_ptr; // edi
     uint8_t* buf_file; // ebx
     uint8_t* screen_palette_ptr; // ecx
-    uint8_t* buf; // ebx
-    int R_scr; // esi
-    int R_in; // edx
-    int value; // eax
+    int screen_color; // esi
+    int in_color; // edx
+    int steep; // eax
     uint8_t* end_pallete; // [esp+0h] [ebp-1Ch]
 
     PALETTE_TIMER = 0;
@@ -60,25 +60,23 @@ void swap_palette_with_animation(uint8_t* palette_file_ptr, int time)
     buf_file = ANIMATE_PALETTE_BUFER;
     screen_palette_ptr = get_RGB_palette_ptr();
     end_pallete = screen_palette_ptr + 768;
-    while (1)
+    while (screen_palette_ptr != end_pallete)
     {
-        R_scr = (unsigned __int8)*screen_palette_ptr;
-        R_in = (unsigned __int8)*palette_ptr++;
-        if (R_in <= R_scr)
-            value = -((((R_scr - R_in) << 8) + 1) / time);
-        else
-            value = (((R_in - R_scr) << 8) + 1) / time;
-        *(WORD*)buf_file = (WORD)R_scr << 8;
-        buf = buf_file + 2;
-        ++screen_palette_ptr;
-        *(WORD*)buf = value;
-        buf_file = buf + 2;
-        if (screen_palette_ptr == end_pallete)
-        {
-            PALETTE_TIMER = time;
-            return;
+        screen_color = (uint8_t)*screen_palette_ptr;
+        in_color = (uint8_t)*palette_ptr++;
+        if (in_color <= screen_color) {
+            steep = -((((screen_color - in_color) << 8) + 1) / time);
         }
+        else {
+            steep = (((in_color - screen_color) << 8) + 1) / time;
+        }
+        *(WORD*)buf_file = (WORD)screen_color << 8;
+        buf_file += 2;
+        *(WORD*)buf_file = steep;
+        buf_file += 2;
+        screen_palette_ptr++;
     }
+    PALETTE_TIMER = time;
 }
 
 //0044B040

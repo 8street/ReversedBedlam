@@ -28,6 +28,7 @@
     <ClInclude Include="..\src\game_level.h" />
     <ClInclude Include="..\src\helper.h" />
     <ClInclude Include="..\src\keyboard.h" />
+    <ClInclude Include="..\src\levels.h" />
     <ClInclude Include="..\src\main.h" />
     <ClInclude Include="..\src\main_menu.h" />
     <ClInclude Include="..\src\map_room.h" />
@@ -48,6 +49,7 @@
     <ClCompile Include="..\src\game_level.cpp" />
     <ClCompile Include="..\src\helper.cpp" />
     <ClCompile Include="..\src\keyboard.cpp" />
+    <ClCompile Include="..\src\levels.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\main_menu.cpp" />
     <ClCompile Include="..\src\map_room.cpp" />
@@ -116,18 +118,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <SourcePath>$(SolutionDir)..\src;$(SourcePath)</SourcePath>
+    <IntDir>$(Configuration)\temp</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <SourcePath>$(SolutionDir)..\src;$(SourcePath)</SourcePath>
+    <IntDir>$(Configuration)\temp</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <SourcePath>$(SolutionDir)..\src;$(VC_SourcePath);</SourcePath>
+    <IntDir>$(Platform)\$(Configuration)\temp</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <SourcePath>$(SolutionDir)..\src;$(VC_SourcePath);</SourcePath>
+    <IntDir>$(Platform)\$(Configuration)\temp</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

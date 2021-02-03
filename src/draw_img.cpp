@@ -3,6 +3,7 @@
 #include "draw_img.h"
 #include "helper.h"
 #include "palette.h"
+#include "map_room.h"
 
 //00401CA2
 void draw_IMG_on_screen(int32_t image_number, int16_t transparent, int32_t y_pos, int32_t x_pos, uint8_t* bin_ptr)
@@ -399,4 +400,350 @@ void draw_IMG_in_buffer(int32_t image_number, int16_t transparent, int32_t x_pos
             }
         }
     }
+}
+
+int const_1_in_map_room = 1;
+
+int merge_IMG(int mission, int code, uint8_t* scren_buf, uint8_t* bin_ptr)
+{
+    uint8_t* bin_pos; // esi
+    uint8_t* mission_adr; // esi
+    int mission_ofst; // ecx
+    int scr_ofst; // ecx
+    uint8_t* screen_pos; // edi
+    int img_height; // ebx
+    uint8_t* img_adr; // esi
+    int ofst; // edx
+    int img_width; // ecx
+    int count; // ecx
+    uint8_t* bin_pos1; // esi
+    uint8_t* mission_adr1; // esi
+    int mission_ofst1; // ecx
+    int scr_ofst1; // ecx
+    uint8_t* screen_pos1; // edi
+    int img_height1; // ebx
+    uint8_t* img_adr1; // esi
+    int ofst1; // edx
+    int img_width1; // ecx
+    unsigned int count1; // ecx
+    char v24; // cf
+    unsigned int v25; // ecx
+    unsigned int count2; // ecx
+    uint8_t* v27; // esi
+    uint8_t* v28; // esi
+    int v29; // ecx
+    int v30; // ecx
+    uint8_t* v31; // edi
+    int v32; // ebx
+    uint8_t* v33; // esi
+    int v34; // edx
+    int v36; // ecx
+    int v37; // ecx
+    uint8_t* v40; // esi
+    uint8_t* v41; // esi
+    int v42; // ecx
+    int v43; // ecx
+    uint8_t* v44; // edi
+    int v45; // ebx
+    uint8_t* v46; // esi
+    uint8_t* v47; // edx
+    int v48; // ecx
+    int v49; // ecx
+    uint8_t* v50; // esi
+    uint8_t* v51; // esi
+    int v52; // ecx
+    int v53; // ecx
+    uint8_t* v54; // edi
+    int v55; // ebx
+    uint8_t* v56; // esi
+    uint8_t* v57; // edx
+    int v58; // ecx
+    int v59; // ecx
+    int v60; // [esp-8h] [ebp-8h]
+    int v61; // [esp-8h] [ebp-8h]
+    int v62; // [esp-8h] [ebp-8h]
+    uint8_t* v63; // [esp-4h] [ebp-4h]
+    uint8_t* v64; // [esp-4h] [ebp-4h]
+    uint8_t* v65; // [esp-4h] [ebp-4h]
+
+    if (code == 304)
+    {
+        bin_pos = &bin_ptr[4 * (mission & 0xFFF) + 2];
+        mission_adr = &bin_pos[*(DWORD*)bin_pos + 2];
+        mission_ofst = 640 * *(unsigned __int16*)mission_adr;
+        mission_adr += 2;
+        scr_ofst = *(unsigned __int16*)mission_adr + mission_ofst;
+        mission_adr += 4;
+        screen_pos = &scren_buf[scr_ofst];
+        img_height = *(unsigned __int16*)mission_adr;
+        img_adr = mission_adr + 2;
+    LABEL_9:
+        while (2)
+        {
+            for (ofst = 640; ; ofst -= img_width & 0xFFF)
+            {
+                while (1)
+                {
+                    img_width = *(unsigned __int16*)img_adr;
+                    img_adr += 2;
+                    mission = img_width;
+                    if (bittest(mission, 0xFu))
+                        break;
+                    count = img_width & 0xFFF;
+                    ofst -= count;
+                    img_adr += count;
+                    memset(screen_pos, 255, count);
+                    screen_pos += count;
+                    if (bittest(mission, 0xEu))
+                    {
+                        screen_pos += ofst;
+                        if (--img_height)
+                            goto LABEL_9;
+                        return mission;
+                    }
+                }
+                if (bittest(img_width, 0xEu))
+                    break;
+                screen_pos += img_width & 0xFFF;
+            }
+            screen_pos += ofst;
+            if (--img_height)
+                continue;
+            break;
+        }
+    }
+    else if (!const_1_in_map_room || code == 300)
+    {
+        bin_pos1 = &bin_ptr[4 * (mission & 0xFFF) + 2];
+        mission_adr1 = &bin_pos1[*(DWORD*)bin_pos1 + 2];
+        mission_ofst1 = 640 * *(unsigned __int16*)mission_adr1;
+        mission_adr1 += 2;
+        scr_ofst1 = *(unsigned __int16*)mission_adr1 + mission_ofst1;
+        mission_adr1 += 4;
+        screen_pos1 = &scren_buf[scr_ofst1];
+        img_height1 = *(unsigned __int16*)mission_adr1;
+        img_adr1 = mission_adr1 + 2;
+    LABEL_19:
+        while (2)
+        {
+            for (ofst1 = 640; ; ofst1 -= img_width1 & 0xFFF)
+            {
+                while (1)
+                {
+                    img_width1 = *(unsigned __int16*)img_adr1;
+                    img_adr1 += 2;
+                    mission = img_width1;
+                    if (bittest(mission, 0xFu))
+                        break;
+                    count1 = img_width1 & 0xFFF;
+                    ofst1 -= count1;
+                    v24 = count1 & 1;
+                    v25 = count1 >> 1;
+                    if (v24)
+                        *screen_pos1++ = *img_adr1++;
+                    v24 = v25 & 1;
+                    count2 = v25 >> 1;
+                    if (v24)
+                    {
+                        *(WORD*)screen_pos1 = *(WORD*)img_adr1;
+                        img_adr1 += 2;
+                        screen_pos1 += 2;
+                    }
+                    memcpy(screen_pos1, img_adr1, 4 * count2);
+                    img_adr1 += 4 * count2;
+                    screen_pos1 += 4 * count2;
+                    if (bittest(mission, 0xEu))
+                    {
+                        screen_pos1 += ofst1;
+                        if (--img_height1)
+                            goto LABEL_19;
+                        return mission;
+                    }
+                }
+                if (bittest(img_width1, 0xEu))
+                    break;
+                screen_pos1 += img_width1 & 0xFFF;
+            }
+            screen_pos1 += ofst1;
+            if (--img_height1)
+                continue;
+            break;
+        }
+    }
+    else
+    {
+        switch (code)
+        {
+        case 301:
+            v50 = &bin_ptr[4 * (mission & 0xFFF) + 2];
+            v51 = &v50[*(DWORD*)v50 + 2];
+            v52 = 640 * *(unsigned __int16*)v51;
+            v51 += 2;
+            v53 = *(unsigned __int16*)v51 + v52;
+            v51 += 4;
+            v54 = &scren_buf[v53];
+            v55 = *(unsigned __int16*)v51;
+            v56 = v51 + 2;
+            v57 = TXPAL3_PAL.get_ptr();
+        LABEL_59:
+            while (2)
+            {
+                v65 = v54;
+                while (1)
+                {
+                    while (1)
+                    {
+                        v58 = *(unsigned __int16*)v56;
+                        v56 += 2;
+                        mission = v58;
+                        if (bittest(mission, 0xFu))
+                            break;
+                        v59 = v58 & 0xFFF;
+                        v62 = mission;
+                        mission &= 0x0000FFFF;
+                        do
+                        {
+                            mission &= 0xFFFF0000;
+                            mission |= *v54 << 8;
+                            mission |= *v56;
+                            *v54 = v57[mission];
+                            ++v56;
+                            ++v54;
+                            --v59;
+                        } while (v59);
+                        mission = v62;
+                        if (bittest(mission, 0xEu))
+                        {
+                            v54 = v65 + 640;
+                            if (--v55)
+                                goto LABEL_59;
+                            return mission;
+                        }
+                    }
+                    if (bittest(v58, 0xEu))
+                        break;
+                    v54 += v58 & 0xFFF;
+                }
+                v54 = v65 + 640;
+                if (--v55)
+                    continue;
+                break;
+            }
+            break;
+        case 302:
+            v40 = &bin_ptr[4 * (mission & 0xFFF) + 2];
+            v41 = &v40[*(DWORD*)v40 + 2];
+            v42 = 640 * *(unsigned __int16*)v41;
+            v41 += 2;
+            v43 = *(unsigned __int16*)v41 + v42;
+            v41 += 4;
+            v44 = &scren_buf[v43];
+            v45 = *(unsigned __int16*)v41;
+            v46 = v41 + 2;
+            v47 = TXPAL3_PAL.get_ptr();
+        LABEL_47:
+            while (2)
+            {
+                v64 = v44;
+                while (1)
+                {
+                    while (1)
+                    {
+                        v48 = *(unsigned __int16*)v46;
+                        v46 += 2;
+                        mission = v48;
+                        if (bittest(mission, 0xFu))
+                            break;
+                        v49 = v48 & 0xFFF;
+                        v61 = mission;
+                        mission &= 0x0000FFFF;
+                        do
+                        {
+                            mission &= 0xFFFF0000;
+                            mission |= *v46 << 8;
+                            mission |= *v44;
+                            *v44 = v47[mission];
+                            ++v46;
+                            ++v44;
+                            --v49;
+                        } while (v49);
+                        mission = v61;
+                        if (bittest(mission, 0xEu))
+                        {
+                            v44 = v64 + 640;
+                            if (--v45)
+                                goto LABEL_47;
+                            return mission;
+                        }
+                    }
+                    if (bittest(v48, 0xEu))
+                        break;
+                    v44 += v48 & 0xFFF;
+                }
+                v44 = v64 + 640;
+                if (--v45)
+                    continue;
+                break;
+            }
+            break;
+        case 303:
+            v27 = &bin_ptr[4 * (mission & 0xFFF) + 2];
+            v28 = &v27[*(DWORD*)v27 + 2];
+            v29 = 640 * *(unsigned __int16*)v28;
+            v28 += 2;
+            v30 = *(unsigned __int16*)v28 + v29;
+            v28 += 4;
+            v31 = &scren_buf[v30];
+            v32 = *(unsigned __int16*)v28;
+            v33 = v28 + 2;
+            v34 = v32;
+        LABEL_33:
+            while (2)
+            {
+                v63 = v31;
+                while (1)
+                {
+                    while (1)
+                    {
+                        v36 = *(unsigned __int16*)v33;
+                        v33 += 2;
+                        mission = v36;
+                        if (bittest(mission, 0xFu))
+                            break;
+                        v37 = v36 & 0xFFF;
+                        v60 = mission;
+                        do
+                        {
+                            if (*v33)
+                            {
+                                //_AL = *v31;
+                                uint8_t* darkpal = SELDARK_PAL.get_ptr();
+                                *v31 = darkpal[*v31];
+                            }
+                            ++v33;
+                            ++v31;
+                            --v37;
+                        } while (v37);
+                        mission = v60;
+                        if (bittest(mission, 0xEu))
+                        {
+                            v31 = v63 + 640;
+                            if (--v34)
+                                goto LABEL_33;
+                            return mission;
+                        }
+                    }
+                    if (bittest(v36, 0xEu))
+                        break;
+                    v31 += v36 & 0xFFF;
+                }
+                v31 = v63 + 640;
+                if (--v34)
+                    continue;
+                break;
+            }
+            break;
+        }
+    }
+    return mission;
 }

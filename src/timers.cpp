@@ -9,6 +9,7 @@ uint32_t TIMER_RESOLUTION;
 MMRESULT TIMER_EVENT;
 
 int32_t WAITING_TIMER;
+int32_t BUTTON_TIMER;
 
 //0044DA64
 int init_timer()
@@ -29,7 +30,7 @@ void timer_callback(UINT uTimerID, UINT uMsg, DWORD_PTR dwUser, DWORD_PTR dw1, D
 
     timer_update();
 
-    if (CURSOR_HIDDEN == 1 && !IS_BLITTING)
+    if (UPDATE_CURSOR_BY_TIMER == 1 && !IS_BLITTING)
     {
         //word_4EF708 = 0;
         GetCursorPos(&cursor);
@@ -62,7 +63,9 @@ void timer_update()
 //00402B0C
 void increment_timers()
 {
-    
+    // not present in original function
+    BUTTON_TIMER++;
+
     //timer1++;
     //PALETTE_TIMER++;
     WAITING_TIMER++;
