@@ -6,6 +6,7 @@ extern uint32_t TIMER_RESOLUTION;
 extern MMRESULT TIMER_EVENT;
 
 extern int32_t WAITING_TIMER;
+extern int32_t BUTTON_TIMER;
 
 int init_timer();
 void timer_callback(UINT uTimerID, UINT uMsg, DWORD_PTR dwUser, DWORD_PTR dw1, DWORD_PTR dw2);

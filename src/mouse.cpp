@@ -18,8 +18,8 @@ int16_t CURSOR_SURFACE_IS_LOCKED;
 
 uint16_t CURSOR_SURFACE_SIZE;
 
-uint8_t CURSOR_HIDDEN;
-uint8_t CURSOR_IS_HIDDEN;
+uint8_t UPDATE_CURSOR_BY_TIMER;
+uint8_t CURSOR_BY_TIMER;
 
 int32_t CURSOR_POS_X;
 int32_t CURSOR_POS_Y;
@@ -120,7 +120,7 @@ void set_cursor_icon(int32_t icon)
         if (CURSOR_SURFACE_IS_LOCKED != 1)
         {
             CURSOR_SURFACE_IS_LOCKED = 1;
-            show_cursor(24);
+            set_cursor_surface_size(24);
             Set_Cursor_ColorKey(0);
             if (icon >= ICON_WAIT && icon < 152)
             {
@@ -162,38 +162,36 @@ void set_cursor_icon(int32_t icon)
 }
 
 //0044BBAC
-void show_cursor(int16_t size)
+void set_cursor_surface_size(int16_t size)
 {
-    __int16 hidden; // bx
-    int result; // eax
+    uint8_t by_timer;
 
-    hidden = CURSOR_HIDDEN;
-    if (CURSOR_HIDDEN == 1)
+    by_timer = UPDATE_CURSOR_BY_TIMER;
+    if (UPDATE_CURSOR_BY_TIMER)
     {
-        CURSOR_HIDDEN = 0;
+        UPDATE_CURSOR_BY_TIMER = 0;
         blit_cursor_bg_to_screen();
     }
-    result = hidden;
     CURSOR_SURFACE_SIZE = size;
-    if (hidden == 1)
+    if (by_timer)
     {
         CURSOR_X1 = -1;
-        CURSOR_HIDDEN = 1;
+        UPDATE_CURSOR_BY_TIMER = 1;
     }
 }
 
 
 //0042391D
-int draw_cursor3()
+int draw_cursor_one_time()
 {
-    CURSOR_IS_HIDDEN = 0;
-    return draw_cursor2();
+    CURSOR_BY_TIMER = 0;
+    return blit_cursor_one_time();
 }
 
 //0044B3F8
-int draw_cursor2()
+int blit_cursor_one_time()
 {
-    CURSOR_HIDDEN = 0;
+    UPDATE_CURSOR_BY_TIMER = 0;
     return blit_cursor_bg_to_screen();
 }
 
@@ -220,18 +218,18 @@ void get_cursor_pos(LONG* x, LONG* y)
 }
 
 //0042392D
-void set_and_hide_cursor()
+void draw_cursor_by_timer()
 {
     set_cursor_icon(CURSOR_ICON);
-    CURSOR_IS_HIDDEN = 1;
-    hide_cursor();
+    CURSOR_BY_TIMER = 1;
+    set_update_cursor_by_timer();
 }
 
 //0044B3D8
-void hide_cursor()
+void set_update_cursor_by_timer()
 {
     CURSOR_X1 = -1;
-    CURSOR_HIDDEN = 1;
+    UPDATE_CURSOR_BY_TIMER = 1;
 }
 
 //0041BF35

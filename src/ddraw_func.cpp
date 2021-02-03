@@ -502,7 +502,7 @@ int blit_second_surface_to_screen()
         IS_BLITTING = 1;
         if (SURFACE_IS_LOCKED)
         {
-            if (CURSOR_HIDDEN)
+            if (UPDATE_CURSOR_BY_TIMER)
             {
                 while (CURSOR_IS_BLITTING) {
                     ;
@@ -526,7 +526,7 @@ int blit_second_surface_to_screen()
                 destination.bottom = WINDOW_POS_Y + WINDOW_HEIGHT;
                 DDRAW_PRIMARY_SCREEN_SURFACE->Blt(&destination, DDRAW_SECOND_SCREEN_SURFACE, &source, 0x1000000, NULL);
             }
-            if (CURSOR_HIDDEN)
+            if (UPDATE_CURSOR_BY_TIMER)
             {
                 CURSOR_UNKNOWN = 0;
                 GetCursorPos(&Cursor);
