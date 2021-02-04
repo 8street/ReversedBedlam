@@ -5,5 +5,5 @@
 int32_t shop_room() {
 
 
-    return MAP_ROOM;
+    return GAME_LEVEL;
 }

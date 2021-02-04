@@ -10,6 +10,7 @@ MMRESULT TIMER_EVENT;
 
 int32_t WAITING_TIMER;
 int32_t BUTTON_TIMER;
+int32_t GAME_UPDATE_TIMER;
 
 //0044DA64
 int init_timer()
@@ -70,7 +71,7 @@ void increment_timers()
     //PALETTE_TIMER++;
     WAITING_TIMER++;
     //timer3++;
-    //game_update_timer++;
+    GAME_UPDATE_TIMER++;
     //level_clock();
     if (PALETTE_TIMER)
     {
