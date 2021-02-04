@@ -34,6 +34,7 @@
     <ClInclude Include="..\src\map_room.h" />
     <ClInclude Include="..\src\mouse.h" />
     <ClInclude Include="..\src\palette.h" />
+    <ClInclude Include="..\src\player.h" />
     <ClInclude Include="..\src\shop_room.h" />
     <ClInclude Include="..\src\timers.h" />
     <ClInclude Include="..\src\variables.h" />
@@ -55,6 +56,7 @@
     <ClCompile Include="..\src\map_room.cpp" />
     <ClCompile Include="..\src\mouse.cpp" />
     <ClCompile Include="..\src\palette.cpp" />
+    <ClCompile Include="..\src\player.cpp" />
     <ClCompile Include="..\src\shop_room.cpp" />
     <ClCompile Include="..\src\timers.cpp" />
     <ClCompile Include="..\src\variables.cpp" />

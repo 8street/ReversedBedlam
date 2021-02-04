@@ -36,7 +36,7 @@ int32_t map_room() {
     draw_text("Loading", FULLFONT_BIN.get_ptr(), 180, 130);
     draw_text("Please Wait", FULLFONT_BIN.get_ptr(), 210, 130);
     redraw();
-    // loading splashscreen. heavy load here
+    // ----loading splashscreen. heavy load here----
 
     SELECTOR_BIN.load("GAMEGFX/SELECTOR.BIN");
     SELMONT_BIN.load("GAMEGFX/SELMONT.BIN");
@@ -51,7 +51,7 @@ int32_t map_room() {
     memset(BACKGROUND_BUF, 0, sizeof(BACKGROUND_BUF));
     memset(black_pal, 0, sizeof(black_pal));
     memcpy(background_pal + 674, FULLPAL_PAL.get_ptr() + 2, 96u);
-
+    memset(buf, 0, sizeof(buf));
     // test
     ZONE_ARR[0].m_ended = 1;
     ZONE_ARR[1].m_ended = 1;
@@ -61,8 +61,8 @@ int32_t map_room() {
     draw_IMG_in_buffer(0, 1, 0, 0, buf, SELECTOR_BIN.get_ptr());
     draw_textbox_black_rectangle(119, 205, buf + 641);
     draw_ended_missions(NORMAL_BIN.get_ptr(), buf);
-
-    // loading is over
+    
+    // -----loading is over---------
     swap_palette_with_animation(black_pal, 10);
     wait_palette_animation(0);
 
