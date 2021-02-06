@@ -35,7 +35,9 @@
     <ClInclude Include="..\src\mouse.h" />
     <ClInclude Include="..\src\palette.h" />
     <ClInclude Include="..\src\player.h" />
+    <ClInclude Include="..\src\rnd.h" />
     <ClInclude Include="..\src\shop_room.h" />
+    <ClInclude Include="..\src\tiles.h" />
     <ClInclude Include="..\src\timers.h" />
     <ClInclude Include="..\src\variables.h" />
     <ClInclude Include="..\src\window.h" />
@@ -57,7 +59,9 @@
     <ClCompile Include="..\src\mouse.cpp" />
     <ClCompile Include="..\src\palette.cpp" />
     <ClCompile Include="..\src\player.cpp" />
+    <ClCompile Include="..\src\rnd.cpp" />
     <ClCompile Include="..\src\shop_room.cpp" />
+    <ClCompile Include="..\src\tiles.cpp" />
     <ClCompile Include="..\src\timers.cpp" />
     <ClCompile Include="..\src\variables.cpp" />
     <ClCompile Include="..\src\window.cpp" />
@@ -120,22 +124,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <SourcePath>$(SolutionDir)..\src;$(SourcePath)</SourcePath>
-    <IntDir>$(Configuration)\temp</IntDir>
+    <IntDir>$(Configuration)\temp\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <SourcePath>$(SolutionDir)..\src;$(SourcePath)</SourcePath>
-    <IntDir>$(Configuration)\temp</IntDir>
+    <IntDir>$(Configuration)\temp\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <SourcePath>$(SolutionDir)..\src;$(VC_SourcePath);</SourcePath>
-    <IntDir>$(Platform)\$(Configuration)\temp</IntDir>
+    <IntDir>$(Platform)\$(Configuration)\temp\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <SourcePath>$(SolutionDir)..\src;$(VC_SourcePath);</SourcePath>
-    <IntDir>$(Platform)\$(Configuration)\temp</IntDir>
+    <IntDir>$(Platform)\$(Configuration)\temp\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

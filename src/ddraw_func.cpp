@@ -16,7 +16,7 @@ uint8_t DDRAW_CREATED;
 uint16_t flag_v;
 
 uint32_t SCREEN_SURFACE_WIDTH;
-
+uint32_t SCREEN_SURFACE_HEIGHT;
 
 LPDIRECTDRAW lpDD;
 
@@ -428,6 +428,7 @@ uint8_t* lock_and_get_surface_ptr() {
         return NULL;
     }
     SCREEN_SURFACE_WIDTH = surface_description.lPitch;
+    SCREEN_SURFACE_HEIGHT = surface_description.dwHeight;
 
     return (uint8_t*)(surface_description.lpSurface);
 

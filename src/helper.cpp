@@ -1,3 +1,4 @@
+
 #include <string.h>
 #include "helper.h"
 
@@ -8,14 +9,15 @@ void clear_buffer(uint32_t size, uint8_t* buffer)
     memset(buffer, 0, size);
 }
 
-//no present
+//not present
 bool bittest(int32_t value, int32_t bit) 
 {
     return value & (1 << bit);
 }
 
-//no present
+//not present
 uint8_t BYTE2(uint32_t value) {
     uint32_t ret = (value & 0x00FF0000) >> 16;
     return static_cast<uint8_t>(ret);
 }
+

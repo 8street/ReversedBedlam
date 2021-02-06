@@ -66,6 +66,12 @@
     <ClInclude Include="..\src\player.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\tiles.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\rnd.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\map_room.cpp">
@@ -126,6 +132,12 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\src\player.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tiles.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\rnd.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
