@@ -2,6 +2,10 @@
 #include <stdint.h>
 
 #include "file.h"
+#include "rnd.h"
+
+extern Rnd RND1;
+extern Rnd RND2;
 
 extern uint8_t BACKGROUND_BUF[307200u];
 

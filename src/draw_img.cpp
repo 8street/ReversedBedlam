@@ -5,6 +5,8 @@
 #include "palette.h"
 #include "map_room.h"
 
+int const1_2 = 1;
+
 //00401CA2
 void draw_IMG_on_screen(int32_t image_number, int16_t transparent, int32_t y_pos, int32_t x_pos, uint8_t* bin_ptr)
 {
@@ -402,8 +404,6 @@ void draw_IMG_in_buffer(int32_t image_number, int16_t transparent, int32_t x_pos
     }
 }
 
-int const_1_in_map_room = 1;
-
 int merge_IMG(int mission, int code, uint8_t* scren_buf, uint8_t* bin_ptr)
 {
     uint8_t* bin_pos; // esi
@@ -512,7 +512,7 @@ int merge_IMG(int mission, int code, uint8_t* scren_buf, uint8_t* bin_ptr)
             break;
         }
     }
-    else if (!const_1_in_map_room || code == 300)
+    else if (!const1_2 || code == 300)
     {
         bin_pos1 = &bin_ptr[4 * (mission & 0xFFF) + 2];
         mission_adr1 = &bin_pos1[*(DWORD*)bin_pos1 + 2];

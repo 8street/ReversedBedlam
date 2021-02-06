@@ -11,6 +11,9 @@
 #include "palette.h"
 #include "shop_room.h"
 
+Rnd RND1;
+Rnd RND2;
+
 uint8_t BACKGROUND_BUF[307200u];
 
 File GENERAL_BIN;
@@ -54,8 +57,6 @@ int32_t game_core() {
         switch (entry)
         {
         case MAIN_MENU:
-            ZONE = 1;
-            ZONE_LEVEL = 1;
             entry = main_menu();
             break;
         case MAP_ROOM:
