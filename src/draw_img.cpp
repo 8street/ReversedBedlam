@@ -221,7 +221,42 @@ void draw_main_menu_background_IMG(uint8_t* bin, uint8_t* palitra, uint8_t* buff
 }
 
 //00401E39
-void draw_IMG_in_buffer(int32_t image_number, int16_t transparent, int32_t x_pos, int32_t y_pos, uint8_t* buffer, uint8_t* bin_ptr)
+void draw_IMG_in_buffer(int32_t img, int16_t transparent, int32_t y_pos, int32_t x_pos, uint8_t* buffer, BIN_File &bin)
+{
+    x_pos += bin.get_img_x_offset(img);
+    y_pos += bin.get_img_y_offset(img);
+
+    uint8_t* source = bin.get_img_data_ptr(img);
+    uint8_t* dest = buffer;
+
+    int32_t img_width = bin.get_img_width(img);
+    int32_t img_height = bin.get_img_height(img);
+
+    dest += x_pos + y_pos * SCREEN_SURFACE_WIDTH;
+
+    if (transparent) {
+        for (int y = 0; y < img_height; y++) {
+            for (int x = 0; x < img_width; x++) {
+                if (*source) {
+                    *dest = *source;
+                }
+                source++;
+                dest++;
+            }
+            dest += SCREEN_SURFACE_WIDTH - img_width;
+        }
+    }
+    else {
+        for (int line = 0; line < img_height; line++) {
+            memcpy(dest, source, img_width);
+            dest += y_pos * line;
+            source += img_width;
+        }
+    }
+}
+
+//00401E39
+void draw_IMG_in_buffer(int32_t image_number, int16_t transparent, int32_t y_pos, int32_t x_pos, uint8_t* buffer, uint8_t* bin_ptr)
 {
  
     int img_header;
@@ -266,12 +301,12 @@ void draw_IMG_in_buffer(int32_t image_number, int16_t transparent, int32_t x_pos
     {
         v9 = *(unsigned __int16*)v8;
         v10 = v8 + 2;
-        x_pos += v9;
-        y_pos += *(unsigned __int16*)v10;
+        y_pos += v9;
+        x_pos += *(unsigned __int16*)v10;
         v8 = v10 + 2;
     }
-    img_y_pos = x_pos;
-    img_x_pos = y_pos;
+    img_y_pos = y_pos;
+    img_x_pos = x_pos;
     img_height1 = *(WORD*)v8;
     if (*(WORD*)v8)
     {

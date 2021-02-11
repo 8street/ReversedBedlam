@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\bin_file.h" />
     <ClInclude Include="..\src\briefing_room.h" />
     <ClInclude Include="..\src\core.h" />
     <ClInclude Include="..\src\ddraw_func.h" />
@@ -43,6 +44,7 @@
     <ClInclude Include="..\src\window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\bin_file.cpp" />
     <ClCompile Include="..\src\briefing_room.cpp" />
     <ClCompile Include="..\src\core.cpp" />
     <ClCompile Include="..\src\ddraw_func.cpp" />

@@ -72,6 +72,9 @@
     <ClInclude Include="..\src\rnd.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\bin_file.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\map_room.cpp">
@@ -138,6 +141,9 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\src\rnd.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\bin_file.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
