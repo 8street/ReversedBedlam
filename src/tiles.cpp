@@ -1,12 +1,108 @@
 
 #include "core.h"
 #include "ddraw_func.h"
+#include "game_level.h"
 #include "helper.h"
 #include "levels.h"
 #include "tiles.h"
 
-
 int const1_1 = 1;
+
+tile TILE_BUFFER[1296];
+uint8_t TOT_BUFFER[306000];
+int32_t NUM_VISIBLE_TILES;
+
+//00407E11
+void init_tiles()
+{
+    int offset; // edi
+    int y; // edx
+    int n; // ebp
+    int num_tiles_x; // esi
+    int x; // ebx
+    int v7; // eax
+    int tot_buf_pos; // edx
+    int z_level; // esi
+    uint8_t* tot1; // ebx
+    int dat_pos; // ebp
+    int x_tile; // [esp+4h] [ebp-50h]
+    int x_ofst; // [esp+Ch] [ebp-48h]
+    int y_ofst; // [esp+10h] [ebp-44h]
+    int y1; // [esp+14h] [ebp-40h]
+    int y_tile; // [esp+18h] [ebp-3Ch]
+    int summ_y; // [esp+1Ch] [ebp-38h]
+    int num_tiles_y; // [esp+24h] [ebp-30h]
+    uint8_t* tot; // [esp+30h] [ebp-24h]
+    int tot_ofst; // [esp+34h] [ebp-20h]
+    uint8_t* dat; // [esp+38h] [ebp-1Ch]
+
+    clear_buffer(sizeof(TILE_BUFFER), (uint8_t*)TILE_BUFFER);
+
+    offset = 0;
+    NUM_VISIBLE_TILES = 0;
+    num_tiles_y = 0;
+    for (y1 = -256; num_tiles_y <= 36; y1 += 16)
+    {
+        y = y1;
+        n = 5;
+        num_tiles_x = 0;
+        x = -32 * num_tiles_y + 304;
+        do
+        {
+            if (x >= 0 && x < 608 && y >= 0 && y < 800)
+            {
+                if (!offset)
+                    offset = n;
+                TILE_BUFFER[NUM_VISIBLE_TILES].screen_pos = &GAME_SCREEN_PTR[640 * y + x];
+                TILE_BUFFER[NUM_VISIBLE_TILES].x_tile = num_tiles_x - offset;
+                TILE_BUFFER[NUM_VISIBLE_TILES].y_tile = num_tiles_y - offset;
+                NUM_VISIBLE_TILES++;
+            }
+            y += 16;
+            x += 32;
+            ++num_tiles_x;
+            ++n;
+        } while (num_tiles_x < 36);
+        num_tiles_y++;
+    }
+
+    clear_buffer(sizeof(TOT_BUFFER), TOT_BUFFER);
+    tot = MISSION_TOT_PTR;
+    dat = MISSION_DAT_PTR;
+    y_ofst = 30 * MISSION_X_MAPSIZE;
+    summ_y = 0;
+    x_ofst = 30 * MISSION_X_MAPSIZE;
+    tot_ofst = 2 * MISSION_SQUARE;
+    for (y_tile = 0; y_tile < MISSION_Y_MAPSIZE; ++y_tile)
+    {
+        for (x_tile = summ_y; x_tile < summ_y + x_ofst; x_tile += 30)
+        {
+            v7 = x_tile;
+            tot_buf_pos = x_tile;
+            z_level = 0;
+            tot1 = tot;
+            do
+            {
+                dat_pos = z_level * MISSION_SQUARE;
+                if (*(WORD*)tot1)
+                {
+                    *(WORD*)&TOT_BUFFER[tot_buf_pos] = *(WORD*)tot1;
+                    //if (!dat[dat_pos])
+                    //    dat_z_level_empty[v7] = 1;
+                }
+                tot_buf_pos += 2;
+                ++v7;
+                ++z_level;
+                tot1 += tot_ofst;
+            } while (z_level < 8);
+            tot += 2;
+            ++dat;
+        }
+        summ_y += y_ofst;
+    }
+    clear_buffer(409600u, GAME_SCREEN_PTR);
+}
+
 
 //00408030
 int32_t get_zone_water_img()

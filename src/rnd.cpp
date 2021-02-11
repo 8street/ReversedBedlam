@@ -15,9 +15,14 @@ uint32_t Rnd::get()
 }
 uint32_t Rnd::get(uint32_t max) 
 {
-    return get() % (max + 1);
+    std::uniform_int_distribution<> null_to_max(0, max);
+    return null_to_max(m_generator);
 }
 int32_t Rnd::get(int32_t min, int32_t max)
 {
-    return get() % ( abs(max - min) + 1) + min;
+    if (min > max) {
+        std::swap(min, max);
+    }
+    std::uniform_int_distribution<> min_to_max(min, max);
+    return min_to_max(m_generator);
 }

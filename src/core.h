@@ -1,6 +1,7 @@
 #pragma once
 #include <stdint.h>
 
+#include "bin_file.h"
 #include "file.h"
 #include "rnd.h"
 
@@ -9,9 +10,9 @@ extern Rnd RND2;
 
 extern uint8_t BACKGROUND_BUF[307200u];
 
-extern File GENERAL_BIN;
-extern File LOAD_US_BIN;
-extern File FULLFONT_BIN;
+extern BIN_File GENERAL_BIN;
+extern BIN_File LOAD_US_BIN;
+extern BIN_File FULLFONT_BIN;
 
 extern File LOADPALU_PAL;
 extern File FULLPAL_PAL;

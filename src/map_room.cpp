@@ -10,9 +10,9 @@
 #include "palette.h"
 #include "timers.h"
 
-File SELECTOR_BIN;
-File SELMONT_BIN;
-File NORMAL_BIN;
+BIN_File SELECTOR_BIN;
+BIN_File SELMONT_BIN;
+BIN_File NORMAL_BIN;
 
 File SELECTOR_PAL;
 File SELDARK_PAL;
@@ -64,7 +64,6 @@ int32_t map_room() {
     redraw();
 
     swap_palette_with_animation(background_pal, 10);
-    wait_palette_animation(0);
     draw_nascent_missions_contour(NORMAL_BIN.get_ptr(), BACKGROUND_BUF);
 
     while(ret_code == NO_EXIT_ROOM){
