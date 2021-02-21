@@ -1,6 +1,6 @@
 # OpenBedlam
 
-An open source re-implementation of Bedlam 1996 game.
+Part of the reversed Bedlam game. For educational purposes to learn how it works.
 
 [![Lines of Code](https://tokei.rs/b1/github/8street/OpenBedlam?category=code)](https://github.com/XAMPPRocky/tokei)
 
@@ -16,11 +16,11 @@ Not playable yet.
 * Map room: partially functioning
 * Shop room: no
 * Briefing room: no
-* Game process: no
+* Game process: draw one tiles level
 
 # Contributing
 
-Contributors, welcome. Create a fork, then create a branch. Modify the source code. Finally, create a pull request to merge with my main branch.
+Contributors, this project is not planned to be supported.
 
 IDA .idb reverse file [here](https://www.dropbox.com/sh/h0yyypzx8gjkn9c/AABBuR-fwNthYnOYPf7VH-Q7a?dl=0).
 
@@ -32,7 +32,3 @@ IDA .idb reverse file [here](https://www.dropbox.com/sh/h0yyypzx8gjkn9c/AABBuR-f
 4. Run
 
 To run in a window mode, set the application 256 color compatibility mode.
-
-# Planning
-
-Migration to SDL and cross-platform. After very large piece of reverse engineering.
