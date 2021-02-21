@@ -1,8 +1,8 @@
-# OpenBedlam
+# ReversedBedlam
 
 Part of the reversed Bedlam game. For educational purposes to learn how it works.
 
-[![Lines of Code](https://tokei.rs/b1/github/8street/OpenBedlam?category=code)](https://github.com/XAMPPRocky/tokei)
+[![Lines of Code](https://tokei.rs/b1/github/8street/ReversedBedlam?category=code)](https://github.com/XAMPPRocky/tokei)
 
 # Project State
 
