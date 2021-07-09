@@ -172,7 +172,7 @@ int load_raw(const char* filename)
 
     File raw_file(filename);
 
-    raw_index = load_raw_to_dsound_buffer(raw_file.get_ptr(), raw_file.get_size(), 11025, 8, 1);
+    raw_index = load_raw_to_dsound_buffer(raw_file.get_ptr(), static_cast<int>(raw_file.get_size()), 11025, 8, 1);
     while(num_copy < NUM_PLAYING_BUFFERS)
     {
         duplicate_sound_buffer(raw_index);
