@@ -23,7 +23,7 @@ int32_t WINDOW_HEIGHT;
 int init_window(HINSTANCE hwnd, HINSTANCE prev_hwnd, LPSTR lp_cmd_line) {
 
     FULLSCREEN = 0;
-    flag_v = 0;
+    USE_VIDEOMEMORY = 0;
      
     int i = 0;
     while (lp_cmd_line[i++]) {
@@ -31,7 +31,7 @@ int init_window(HINSTANCE hwnd, HINSTANCE prev_hwnd, LPSTR lp_cmd_line) {
             FULLSCREEN = 1;
         }
         if (lp_cmd_line[i] == '-' && lp_cmd_line[i + 1] == 'v') {
-            flag_v = 1;
+            USE_VIDEOMEMORY = 1;
         }
     }
 

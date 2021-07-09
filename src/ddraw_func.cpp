@@ -13,7 +13,7 @@ uint8_t FULLSCREEN;
 uint8_t SURFACE_IS_LOCKED;
 uint8_t DDRAW_CREATED;
 
-uint16_t flag_v;
+uint16_t USE_VIDEOMEMORY;
 
 uint32_t SCREEN_SURFACE_WIDTH;
 uint32_t SCREEN_SURFACE_HEIGHT;
@@ -93,9 +93,9 @@ int create_surface_palette(int32_t width, int32_t height, int32_t depth) {
     }
     else
     {
-        ddraw_surf_descr2.dwSize = 108;
+        ddraw_surf_descr2.dwSize = sizeof(ddraw_surf_descr2);
         lpDD->GetDisplayMode(&ddraw_surf_descr2);
-        if ((ddraw_surf_descr2.ddpfPixelFormat.dwFlags & 0x20) == 0)
+        if ((ddraw_surf_descr2.ddpfPixelFormat.dwFlags & DDSD_BACKBUFFERCOUNT) == 0)
             return 1003;
     }
     if (DDRAW_SECOND_SCREEN_SURFACE)
@@ -117,34 +117,34 @@ int create_surface_palette(int32_t width, int32_t height, int32_t depth) {
     if (FULLSCREEN)
     {
         memset(&ddraw_surf_descr2, 0, sizeof(ddraw_surf_descr2));
-        ddraw_surf_descr2.dwSize = 108;
-        ddraw_surf_descr2.dwFlags = 33;
+        ddraw_surf_descr2.dwSize = sizeof(ddraw_surf_descr2);
+        ddraw_surf_descr2.dwFlags = DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
         ddraw_surf_descr2.dwBackBufferCount = 1;
-        ddraw_surf_descr2.ddsCaps.dwCaps = 16920;
-        if (flag_v)
+        ddraw_surf_descr2.ddsCaps.dwCaps = DDSCAPS_COMPLEX | DDSCAPS_FLIP | DDSCAPS_PRIMARYSURFACE | DDSCAPS_VIDEOMEMORY;
+        if (USE_VIDEOMEMORY)
             ret_code = lpDD->CreateSurface(&ddraw_surf_descr2, &DDRAW_PRIMARY_SCREEN_SURFACE, NULL);
         else
             ret_code = 1;
         //word_4EE9E4 = 0;
         if ((uint32_t)ret_code)
         {
-            ddraw_surf_descr2.ddsCaps.dwCaps &= 0xFFFFBFFF;
+            ddraw_surf_descr2.ddsCaps.dwCaps = DDSCAPS_COMPLEX | DDSCAPS_FLIP | DDSCAPS_PRIMARYSURFACE;
             ret_code = lpDD->CreateSurface(&ddraw_surf_descr2, &DDRAW_PRIMARY_SCREEN_SURFACE, NULL);
         }
         if ((uint32_t)ret_code)
             return 1004;
         v6 = &caps;
         v7 = 4;
-        caps.dwCaps = 4;
+        caps.dwCaps = DDSCAPS_BACKBUFFER;
         //v8 = DDRAW_PRIMARY_SCREEN_SURFACE->lpVtbl;
         if ((uint32_t)DDRAW_PRIMARY_SCREEN_SURFACE->GetAttachedSurface(&caps, &DDRAW_SECOND_SCREEN_SURFACE))
             return 1004;
     }
     else{
         memset(&ddraw_surf_descr2, 0, sizeof(ddraw_surf_descr2));
-        ddraw_surf_descr2.dwSize = 108;
+        ddraw_surf_descr2.dwSize = sizeof(ddraw_surf_descr2);
         ddraw_surf_descr2.ddsCaps.dwCaps = DDCAPS_BLTSTRETCH;
-        ddraw_surf_descr2.dwFlags = 1;
+        ddraw_surf_descr2.dwFlags = DDSD_CAPS;
         if ((uint32_t)lpDD->CreateSurface(&ddraw_surf_descr2, &DDRAW_PRIMARY_SCREEN_SURFACE, NULL))
             return 1004;
         v7 = 64;
@@ -152,8 +152,8 @@ int create_surface_palette(int32_t width, int32_t height, int32_t depth) {
         ddraw_surf_descr2.dwWidth = width;
         ddraw_surf_descr2.dwHeight = height;
         ddraw_surf_descr2.ddsCaps.dwCaps = DDCAPS_BLT;
-        ddraw_surf_descr2.dwSize = 108;
-        ddraw_surf_descr2.dwFlags = 7;
+        ddraw_surf_descr2.dwSize = sizeof(ddraw_surf_descr2);
+        ddraw_surf_descr2.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH;
         if ((uint32_t)lpDD->CreateSurface(&ddraw_surf_descr2, &DDRAW_SECOND_SCREEN_SURFACE, NULL))
             return 1004;
         //v8 = lpDD->lpVtbl;
@@ -196,8 +196,7 @@ int create_surface_palette(int32_t width, int32_t height, int32_t depth) {
             PALETTEENTRY_BUFFER[256].peGreen = -1;
             PALETTEENTRY_BUFFER[256].peBlue = -1;
         }
-        // maybe 68 is obsolete number
-        if (lpDD->CreatePalette(68, &PALETTEENTRY_BUFFER[1], &DDRAW_SCREEN_PALETTE, NULL) == DD_OK) {
+        if (lpDD->CreatePalette(DDPCAPS_8BIT | DDPCAPS_ALLOW256, &PALETTEENTRY_BUFFER[1], &DDRAW_SCREEN_PALETTE, NULL) == DD_OK) {
             DDRAW_PRIMARY_SCREEN_SURFACE->SetPalette(DDRAW_SCREEN_PALETTE);
         }
     }
@@ -214,11 +213,11 @@ HRESULT create_smack_buffer()
     DDSURFACEDESC ddraw_surf_descr_smack; // [esp+0h] [ebp-78h] BYREF
 
     memset(&ddraw_surf_descr_smack, 0, sizeof(ddraw_surf_descr_smack));
-    ddraw_surf_descr_smack.ddsCaps.dwCaps = 2112;
-    ddraw_surf_descr_smack.dwSize = 108;
+    ddraw_surf_descr_smack.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
+    ddraw_surf_descr_smack.dwSize = sizeof(ddraw_surf_descr_smack);
     ddraw_surf_descr_smack.dwWidth = GAME_WIDTH;
     ddraw_surf_descr_smack.dwHeight = GAME_HEIGHT;
-    ddraw_surf_descr_smack.dwFlags = 7;
+    ddraw_surf_descr_smack.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH;
     result = lpDD->CreateSurface(&ddraw_surf_descr_smack, &DDRAW_SMACK_SURFACE, NULL);
     //if (result)
         //result = printf("Error creating smack buffer: %x\n", result);
@@ -239,18 +238,18 @@ HRESULT create_mouse_buffer()
     DDCOLORKEY color_key; // [esp+90h] [ebp-20h] BYREF
 
     memset(&surfDescr5, 0, sizeof(surfDescr5));
-    surfDescr5.ddsCaps.dwCaps = 2112;
+    surfDescr5.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
     surfDescr5.dwWidth = 32;
     surfDescr5.dwHeight = 32;
-    surfDescr5.dwSize = 108;
-    surfDescr5.dwFlags = 7;
+    surfDescr5.dwSize = sizeof(surfDescr5);
+    surfDescr5.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH;
     retVal = lpDD->CreateSurface(&surfDescr5, &DDRAW_GAMECURSOR_SURFACE, NULL);
     //if (retVal)
         //printf("Error creating  mouse buffer: %x\n", retVal);
     retVal = lpDD->CreateSurface(&surfDescr5, &DDRAW_MOUSE_BG_SURFACE, NULL);
     //if (v1)
         //printf("Error creating mouse bg buffer: %x\n", v1);
-    surfDescr5.dwSize = 108;
+    surfDescr5.dwSize = sizeof(surfDescr5);
     result = DDRAW_GAMECURSOR_SURFACE->Lock(NULL, &surfDescr5, DDLOCK_WAIT, NULL);
     if (!(uint32_t)result)
     {
@@ -423,7 +422,7 @@ uint8_t* lock_and_get_surface_ptr() {
     if (DDRAW_PRIMARY_SCREEN_SURFACE->IsLost() == DDERR_SURFACELOST) {
         DDRAW_PRIMARY_SCREEN_SURFACE->Restore();
     }
-    surface_description.dwSize = 108;
+    surface_description.dwSize = sizeof(surface_description);
     if (DDRAW_SECOND_SCREEN_SURFACE->Lock(NULL, &surface_description, DDLOCK_WAIT, NULL) != DD_OK){
         return NULL;
     }
