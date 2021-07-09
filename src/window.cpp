@@ -3,6 +3,7 @@
 #include <WinUser.h>
 
 #include "ddraw_func.h"
+#include "dsound_func.h"
 #include "helper.h"
 #include "keyboard.h"
 #include "main.h"
@@ -113,7 +114,7 @@ int init_window(HINSTANCE hwnd, HINSTANCE prev_hwnd, LPSTR lp_cmd_line) {
     UpdateWindow(WINDOW_HWND);
 
     //dword_4EF67C = 0;
-    //init_dsound();
+    init_dsound();
     int error_code = 0;
     if (SURFACE_IS_LOCKED)
     {
