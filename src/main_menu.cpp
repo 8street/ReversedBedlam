@@ -242,6 +242,7 @@ void construct_menu(int32_t menu_type)
         MENU_TEXT_ARR.push_back("NONE");
         MENU_TEXT_ARR.push_back("NONE");
         MENU_TEXT_ARR.push_back("Main Menu");
+        break;
     // Quit to Windows
     case EXIT_TO_WINDOWS:
         MENU_TEXT_ARR.push_back("Quit to Windows");

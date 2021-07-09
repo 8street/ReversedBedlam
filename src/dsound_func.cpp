@@ -15,7 +15,7 @@ LPDIRECTSOUNDBUFFER *DSOUND_BUFFERS_ARR;
 
 int DSOUND_BUFFERS_USAGE;
 
-size_t NUM_DSOUND_BUFFERS = 512;
+int NUM_DSOUND_BUFFERS = 512;
 int NUM_PLAYING_BUFFERS = 4;
 
 //0044C068
@@ -153,7 +153,7 @@ int duplicate_sound_buffer(int index)
     {
         return -1;
     }
-    if (DSOUND_BUFFERS_USAGE >= static_cast<int>(NUM_DSOUND_BUFFERS))
+    if (DSOUND_BUFFERS_USAGE >= NUM_DSOUND_BUFFERS)
     {
         return 1;
     }
@@ -187,7 +187,7 @@ bool dsound_buf_is_not_playing(int buffer_index)
     bool is_not_playing = true;
     DWORD status = NULL;
 
-    if (DSOUND_ERRORCODE && buffer_index >= 0 && buffer_index < (int)NUM_DSOUND_BUFFERS)
+    if (DSOUND_ERRORCODE && buffer_index >= 0 && buffer_index < NUM_DSOUND_BUFFERS)
     {
         return true;
     }
@@ -257,7 +257,7 @@ void dsound_play(int buffer_index, int pos, int samplerate, int volume, int bala
 {
     if (!DSOUND_ERRORCODE)
     {
-        if (buffer_index >= 0 && buffer_index < (int)NUM_DSOUND_BUFFERS)
+        if (buffer_index >= 0 && buffer_index < NUM_DSOUND_BUFFERS)
         {
             if (DSOUND_BUFFERS_ARR[buffer_index])
             {
@@ -282,7 +282,7 @@ void dsound_play(int buffer_index, int pos, int samplerate, int volume, int bala
 //0044C904
 void dsound_stop(int buffer_index)
 {
-    if (!DSOUND_ERRORCODE && buffer_index >= 0 && buffer_index < (int)NUM_DSOUND_BUFFERS)
+    if (!DSOUND_ERRORCODE && buffer_index >= 0 && buffer_index < NUM_DSOUND_BUFFERS)
     {
         if (DSOUND_BUFFERS_ARR[buffer_index]) {
             DSOUND_BUFFERS_ARR[buffer_index]->Stop();
