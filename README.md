@@ -9,18 +9,18 @@ Part of the reversed Bedlam game. For educational purposes to learn how it works
 Not playable yet.
 
 * Video: direct draw
-* Sound: no
+* Sound: direct sound
 * Mouse: yes
 * Keyboard: yes
 * Main menu: partially functioning
 * Map room: partially functioning
 * Shop room: no
 * Briefing room: no
-* Game process: draw one tiles level
+* Game process: tiles (draw one level)
 
 # Contributing
 
-Contributors, this project is not planned to be supported.
+Contributors, welcome. Create a fork of this repository, then create a branch. Modify the source code in your branch. Finally, create a pull request to merge with my main branch. Patches and improvements are welcome.
 
 IDA .idb reverse file [here](https://www.dropbox.com/sh/h0yyypzx8gjkn9c/AABBuR-fwNthYnOYPf7VH-Q7a?dl=0).
 

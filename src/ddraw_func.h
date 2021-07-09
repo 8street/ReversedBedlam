@@ -10,7 +10,7 @@ extern int32_t GAME_HEIGHT;
 extern uint8_t FULLSCREEN;
 extern uint8_t SURFACE_IS_LOCKED;
 
-extern uint16_t flag_v;
+extern uint16_t USE_VIDEOMEMORY;
 
 
 extern LPDIRECTDRAWCLIPPER DDRAW_SURFACE_CLIPPER;

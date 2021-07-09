@@ -65,7 +65,7 @@ void draw_IMG_on_screen(int32_t image_number, int16_t transparent, int32_t y_pos
         img_x_size = *(unsigned __int16*)file_pos_ptr;
         file_pos_ptr1 = file_pos_ptr + 2;
         img_y_size2 = *(unsigned __int16*)file_pos_ptr1;
-        if (*(WORD*)file_pos_ptr1)
+        if (*(WORD*)file_pos_ptr1)// ys
         {
             img_ptr1 = file_pos_ptr1 + 2;
             img_height = img_y_size2;
