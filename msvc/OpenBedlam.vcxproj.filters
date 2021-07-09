@@ -153,4 +153,9 @@
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\README.md" />
+    <None Include="..\.gitignore" />
+    <None Include="..\LICENSE" />
+  </ItemGroup>
 </Project>

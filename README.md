@@ -9,7 +9,7 @@ An open source re-implementation of Bedlam 1996 game.
 Not playable yet.
 
 * Video: direct draw
-* Sound: no
+* Sound: direct sound
 * Mouse: yes
 * Keyboard: yes
 * Main menu: partially functioning
@@ -20,7 +20,7 @@ Not playable yet.
 
 # Contributing
 
-Contributors, welcome. Create a fork, then create a branch. Modify the source code. Finally, create a pull request to merge with my main branch.
+Contributors, welcome. Create a fork of this repository, then create a branch. Modify the source code in your branch. Finally, create a pull request to merge with my main branch. Patches and improvements are welcome.
 
 IDA .idb reverse file [here](https://www.dropbox.com/sh/h0yyypzx8gjkn9c/AABBuR-fwNthYnOYPf7VH-Q7a?dl=0).
 
