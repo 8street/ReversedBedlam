@@ -15,8 +15,9 @@ LPDIRECTSOUNDBUFFER *DSOUND_BUFFERS_ARR;
 
 int DSOUND_BUFFERS_USAGE;
 
-int NUM_DSOUND_BUFFERS = 512;
-int NUM_PLAYING_BUFFERS = 4;
+int NUM_DSOUND_BUFFERS;
+int SIMULTANEOUSLY_PLAYING_BUFFERS = 4;
+int NUM_SOUND_FILES = 512;
 
 //0044C068
 int init_dsound()
@@ -26,11 +27,12 @@ int init_dsound()
     WAVEFORMATEX waveformat;
 
     DSOUND_BUFFERS_USAGE = 0;
+    NUM_DSOUND_BUFFERS = NUM_SOUND_FILES * SIMULTANEOUSLY_PLAYING_BUFFERS;
 
     PRIMARY_DSOUND_BUFFER = NULL;
-    DSOUND_BUFFERS_ARR = (LPDIRECTSOUNDBUFFER *)malloc(sizeof(LPDIRECTSOUNDBUFFER) * NUM_DSOUND_BUFFERS * NUM_PLAYING_BUFFERS);
+    DSOUND_BUFFERS_ARR = (LPDIRECTSOUNDBUFFER *)malloc(sizeof(LPDIRECTSOUNDBUFFER) * NUM_DSOUND_BUFFERS);
     if (DSOUND_BUFFERS_ARR) {
-        memset(DSOUND_BUFFERS_ARR, NULL, sizeof(LPDIRECTSOUNDBUFFER) * NUM_DSOUND_BUFFERS * NUM_PLAYING_BUFFERS);
+        memset(DSOUND_BUFFERS_ARR, NULL, sizeof(LPDIRECTSOUNDBUFFER) * NUM_DSOUND_BUFFERS);
         
         DSOUND_ERRORCODE = 0;
         DSOUND_INNITED = 1;
@@ -59,7 +61,6 @@ int init_dsound()
         waveformat.nBlockAlign = (waveformat.wBitsPerSample / 8) * waveformat.nChannels;
         waveformat.nAvgBytesPerSec = waveformat.nSamplesPerSec * waveformat.nBlockAlign;
 
-
         memset(&lpcDSBufferDesc, 0, sizeof(lpcDSBufferDesc));
         lpcDSBufferDesc.dwFlags = DSBCAPS_PRIMARYBUFFER;
         lpcDSBufferDesc.lpwfxFormat = NULL;
@@ -70,12 +71,12 @@ int init_dsound()
             DSOUND_ERRORCODE = -1;
             DSOUND_INNITED = 0;
         }
-        else if ((uint32_t)PRIMARY_DSOUND_BUFFER->SetFormat(&waveformat))
-        {
-            ret_val = 4;
-            DSOUND_ERRORCODE = -1;
-            DSOUND_INNITED = 0;
-        }
+        //else if ((uint32_t)PRIMARY_DSOUND_BUFFER->SetFormat(&waveformat))
+        //{
+        //    ret_val = 4;
+        //    DSOUND_ERRORCODE = -1;
+        //    DSOUND_INNITED = 0;
+        //}
         else
         {
             PRIMARY_DSOUND_BUFFER->Play(NULL, NULL, DSBPLAY_LOOPING);
@@ -97,7 +98,7 @@ int load_raw_to_dsound_buffer(uint8_t *raw_ptr, int filesize, int discretization
     DWORD count_1 = 0;
     DWORD count_2 = 0;
 
-    if (DSOUND_ERRORCODE == -1 || filesize <= 0) {
+    if (DSOUND_ERRORCODE || filesize <= 0) {
         return -1;
     }
 
@@ -173,7 +174,7 @@ int load_raw(const char* filename)
     File raw_file(filename);
 
     raw_index = load_raw_to_dsound_buffer(raw_file.get_ptr(), static_cast<int>(raw_file.get_size()), 11025, 8, 1);
-    while(num_copy < NUM_PLAYING_BUFFERS)
+    while(num_copy < SIMULTANEOUSLY_PLAYING_BUFFERS)
     {
         duplicate_sound_buffer(raw_index);
         num_copy++;
@@ -182,17 +183,17 @@ int load_raw(const char* filename)
 }
 
 //0044C5AC
-bool dsound_buf_is_not_playing(int buffer_index)
+bool dsound_buf_is_stopped(int buffer_index)
 {
     bool is_not_playing = true;
     DWORD status = NULL;
 
-    if (DSOUND_ERRORCODE && buffer_index >= 0 && buffer_index < NUM_DSOUND_BUFFERS)
+    if (DSOUND_ERRORCODE)
     {
         return true;
     }
 
-    if (DSOUND_BUFFERS_ARR[buffer_index])
+    if (buffer_index >= 0 && buffer_index < NUM_DSOUND_BUFFERS && DSOUND_BUFFERS_ARR[buffer_index])
     {
         DSOUND_BUFFERS_ARR[buffer_index]->GetStatus(&status);
         if (status == DSBSTATUS_PLAYING) {
@@ -224,9 +225,9 @@ int play_sound(int raw_index, int x, int y, int a5)
 
     int not_busy_index = 0; // ebp
     int i = 0;
-    for (int raw2 = raw_index; raw2 < raw_index + NUM_PLAYING_BUFFERS; raw2++)
+    for (int raw2 = raw_index; raw2 < raw_index + SIMULTANEOUSLY_PLAYING_BUFFERS; raw2++)
     {
-        if (dsound_buf_is_not_playing(raw2))
+        if (dsound_buf_is_stopped(raw2))
         {
             not_busy_index = i;
             break;
@@ -239,44 +240,36 @@ int play_sound(int raw_index, int x, int y, int a5)
     if (!not_busy_index) {
         dsound_stop(play_index);
     }
-    return dsound_play1(play_index, 0, 11025, volume, balance);
-}
-
-//0044C8C4
-int dsound_play1(int buffer_index, int pos, int samplerate, int volume, int balance)
-{
-    if (DSOUND_ERRORCODE) {
-        return -1;
-    }
-    dsound_play(buffer_index, pos, samplerate, volume, balance);
-    return buffer_index;
+    return dsound_play(play_index, 0, 11025, volume, balance);
 }
 
 //0044C4A8
-void dsound_play(int buffer_index, int pos, int samplerate, int volume, int balance)
+int dsound_play(int buffer_index, int pos, int samplerate, int volume, int balance)
 {
-    if (!DSOUND_ERRORCODE)
+    if (DSOUND_ERRORCODE)
     {
-        if (buffer_index >= 0 && buffer_index < NUM_DSOUND_BUFFERS)
+        return -1;
+    }
+    if (buffer_index >= 0 && buffer_index < NUM_DSOUND_BUFFERS)
+    {
+        if (DSOUND_BUFFERS_ARR[buffer_index])
         {
-            if (DSOUND_BUFFERS_ARR[buffer_index])
+            if (volume)
             {
-                if (volume)
+                if (dsound_buf_is_stopped(buffer_index))
                 {
-                    if (dsound_buf_is_not_playing(buffer_index))
-                    {
-                        long vol = (volume - 32768) * 10000 / 32768;
-                        long bal = (balance - 32768) * 10000 / 32768;
-                        DSOUND_BUFFERS_ARR[buffer_index]->SetCurrentPosition(pos);
-                        DSOUND_BUFFERS_ARR[buffer_index]->SetFrequency(samplerate);
-                        DSOUND_BUFFERS_ARR[buffer_index]->SetVolume(vol);
-                        DSOUND_BUFFERS_ARR[buffer_index]->SetPan(bal);
-                        DSOUND_BUFFERS_ARR[buffer_index]->Play(0, 0, 0);// play no looping
-                    }
+                    long vol = (volume - 32768) * 10000 / 32768;
+                    long bal = (balance - 32768) * 10000 / 32768;
+                    DSOUND_BUFFERS_ARR[buffer_index]->SetCurrentPosition(pos);
+                    DSOUND_BUFFERS_ARR[buffer_index]->SetFrequency(samplerate);
+                    DSOUND_BUFFERS_ARR[buffer_index]->SetVolume(vol);
+                    DSOUND_BUFFERS_ARR[buffer_index]->SetPan(bal);
+                    DSOUND_BUFFERS_ARR[buffer_index]->Play(0, 0, 0);// play no looping
                 }
             }
         }
     }
+    return buffer_index;
 }
 
 //0044C904
